@@ -42,6 +42,7 @@ class puppet::master (
   $certname,
   $puppet_master_package,
   $puppet_master_service,
+  $package_provider = undef,
   $version
 
 ) {
@@ -59,6 +60,7 @@ class puppet::master (
 
   package { $puppet_master_package:
     ensure => $version,
+    provider => $package_provider,
   }
 
   file { '/etc/puppet/namespaceauth.conf':
@@ -72,16 +74,25 @@ class puppet::master (
     order   => '05',
     target  => "/etc/puppet/puppet.conf",
     content => template("puppet/puppet.conf-master.erb"),
-    before  => Service[$puppet_master_service],
   }
 
-  service { $puppet_master_service:
-    ensure    => running,
-    enable    => true,
-    hasstatus => true,
-    require   => File['/etc/puppet/puppet.conf'],
-    #before    => Service['httpd'];
+  if $package_provider == 'gem' {
+    exec { 'puppet_master_start':
+      command   => '/usr/bin/nohup puppet master &',
+      refresh   => '/usr/bin/pkill puppet && /usr/bin/nohup puppet master &',
+      unless    => "/bin/ps -ef | grep -v grep | /bin/grep 'puppet master'",
+      require   => File['/etc/puppet/puppet.conf'],
+      subscribe => Package[$puppet_master_package],
+    }
+  } else {
+    service { $puppet_master_service:
+      ensure    => running,
+      enable    => true,
+      hasstatus => true,
+      require   => File['/etc/puppet/puppet.conf'],
+      subscribe => Package[$puppet_master_package],
+      #before    => Service['httpd'];
+    }
   }
-
 }
 

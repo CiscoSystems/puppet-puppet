@@ -16,6 +16,7 @@ class puppet::agent(
   $puppet_agent_name,
   $puppet_conf,
   $puppet_server,
+  $package_provider = undef,
   $version
 ) inherits puppet::params {
   
@@ -29,17 +30,28 @@ class puppet::agent(
   }
 
   package { 'puppet':
-    name    => $puppet_agent_name,
-    ensure  => $version,
+    name     => $puppet_agent_name,
+    ensure   => $version,
+    provider => $package_provider,
   }
 
-  service { "puppet_agent":
-    name       => "$puppet_agent_service",
-    ensure     => running,
-    enable     => true,
-    hasstatus  => true,
-    hasrestart => true,
-    subscribe  => Concat[$puppet_conf],
+  if $package_provider == 'gem' {
+    exec { 'puppet_agent_start':
+      command   => '/usr/bin/nohup puppet agent &',
+      refresh   => '/usr/bin/pkill puppet && /usr/bin/nohup puppet agent &',
+      unless    => "/bin/ps -ef | grep -v grep | /bin/grep 'puppet agent'",
+      require   => File['/etc/puppet/puppet.conf'],
+      subscribe => Package[$puppet_agent_package],
+    }
+  } else {
+    service { $puppet_agent_service:
+      ensure    => running,
+      enable    => true,
+      hasstatus => true,
+      require   => File['/etc/puppet/puppet.conf'],
+      subscribe => Package[$puppet_agent_package],
+      #before    => Service['httpd'];
+    }
   }
 
   concat::fragment { 'puppet.conf-common':

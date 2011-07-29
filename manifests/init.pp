@@ -40,6 +40,7 @@ class puppet (
   $storeconfigs_dbsocket    = $puppet::params::storeconfigs_dbsocket,
   $certname                 = $puppet::params::certname,
   $puppet_master_package    = $puppet::params::puppet_master_package,
+  $package_provider         = undef,
   $modulepath               = $puppet::params::modulepath,
   $dashboard_version        = undef,
   $dashboard_site           = undef,
@@ -119,6 +120,7 @@ class puppet (
       certname                  => $certname_real,
       puppet_master_service     => $puppet_master_service_real,
       puppet_master_package     => $puppet_master_package_real,
+      package_provider          => $package_provider,
     }
   }
 
