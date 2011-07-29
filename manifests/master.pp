@@ -82,6 +82,17 @@ class puppet::master (
     source => 'puppet:///modules/puppet/namespaceauth.conf',
   }
 
+  if ! defined(Concat[$pupet_conf]) {
+    concat { $puppet_conf:
+      mode    => '0644',
+      require => Package[$puppet_master_package],
+    }
+  } else {
+    Concat<| title == $puppet_conf |> {
+      require => Package[$puppet_master_package]
+    }
+  }
+
   concat::fragment { 'puppet.conf-header':
     order   => '05',
     target  => "/etc/puppet/puppet.conf",
