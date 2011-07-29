@@ -11,11 +11,11 @@
 # Sample Usage:
 #
 class puppet::storeconfigs (
-    $storeconfigs_dbadapter,
-    $storeconfigs_dbuser,
-    $storeconfigs_dbpassword,
-    $storeconfigs_dbserver,
-    $storeconfigs_dbsocket
+    $dbadapter,
+    $dbuser,
+    $dbpassword,
+    $dbserver,
+    $dbsocket
 ) {
 
   case $dbadapter {
@@ -23,13 +23,13 @@ class puppet::storeconfigs (
       include puppet::storeconfig::sqlite
     }
     'mysql': {
-      class { 
-        "puppet::storeconfigs::mysql": 
-          dbuser     => $storeconfigs_dbuser,
-          dbpassword => $storeconfigs_dbpassword,
+      class {
+        "puppet::storeconfigs::mysql":
+          dbuser     => $dbuser,
+          dbpassword => $dbpassword,
       }
     }
-    default: { err("targer dbadapter $storeconfigs_dbadapter not implemented") }
+    default: { err("target dbadapter $dbadapter not implemented") }
   }
 
   concat::fragment { 'puppet.conf-master-storeconfig':

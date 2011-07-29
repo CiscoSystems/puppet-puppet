@@ -54,13 +54,12 @@ class puppet::master (
   }
 
   if $storeconfigs {
-    
     class { 'puppet::storeconfigs':
-      storeconfigs_dbadapter  => $storeconfigs_dbadapter,
-      storeconfigs_dbuser     => $storeconfigs_dbuser,
-      storeconfigs_dbpassword => $storeconfigs_dbpassword,
-      storeconfigs_dbserver   => $storeconfigs_dbserver,
-      storeconfigs_dbsocket   => $storeconfigs_dbsocket,
+      dbadapter  => $storeconfigs_dbadapter,
+      dbuser     => $storeconfigs_dbuser,
+      dbpassword => $storeconfigs_dbpassword,
+      dbserver   => $storeconfigs_dbserver,
+      dbsocket   => $storeconfigs_dbsocket,
     }
   }
 
