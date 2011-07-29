@@ -16,6 +16,11 @@
 #
 # Requires:
 #
+#  Class['concat']
+#  Class['stdlib']
+#  Class['concat::setup']
+#  Class['mysql'] (conditionally)
+#
 # Sample Usage:
 #
 #  $modulepath = [
