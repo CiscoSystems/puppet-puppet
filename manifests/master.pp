@@ -32,20 +32,22 @@
 #  }
 #
 class puppet::master (
-  $modulepath,
+  $modulepath = '/etc/puppet/modules',
+  $manifest = '/etc/puppet/manifests/site.pp',
   $storeconfigs,
   $storeconfigs_dbadapter,
   $storeconfigs_dbuser,
   $storeconfigs_dbpassword,
   $storeconfigs_dbserver,
   $storeconfigs_dbsocket,
-  $certname,
-  $puppet_master_package,
-  $puppet_master_service,
+  $certname = $fqdn,
+  $autosign = false,
+  $puppet_master_package = $puppet::params::puppet_master_package,
   $package_provider = undef,
+  $puppet_master_service = $puppet::params::puppet_master_service,
   $version
 
-) {
+) inherits puppet::params {
 
   if $package_provider == 'gem' {
     Concat::Fragment['puppet.conf-header']->Exec['puppet_master_start']
