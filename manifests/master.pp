@@ -47,6 +47,12 @@ class puppet::master (
 
 ) {
 
+  if $package_provider == 'gem' {
+    Concat::Fragment['puppet.conf-header']->Exec['puppet_master_start']
+  } else {
+    Concat::Fragment['puppet.conf-header']->Service[$puppet_master_service]
+  }
+
   if $storeconfigs {
     
     class { 'puppet::storeconfigs':
