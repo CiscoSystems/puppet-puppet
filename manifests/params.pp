@@ -12,20 +12,24 @@
 #
 class puppet::params {
 
-  $puppet_server                    = 'baal.puppetlabs.com'
+  $puppet_server                    = 'aserver.puppetlabs.lan'
   $puppet_storeconfigs_password     = 'password'
   $modulepath                       = "/etc/puppet/modules"
-  $storeconfigs                     = 'false'
-  $storeconfigs_dbadapter           = 'sqlite3'
+  $storeconfigs_dbadapter           = 'mysql'
   $storeconfigs_dbuser              = 'puppet'
   $storeconfigs_dbpassword          = 'password'
   $storeconfigs_dbserver            = 'localhost'
   $storeconfigs_dbsocket            = '/var/run/mysqld/mysqld.sock'
   $certname                         = $fqdn
+  $confdir                          = '/etc/puppet/puppet.conf'
+  $manifest                         = '/etc/puppet/manifests/site.pp'
+  $puppet_site                      = $fqdn
+  $puppet_docroot                   = '/etc/puppet/rack/public/'
+  $puppet_passenger_port            = '8140'
 
  case $operatingsystem {
     'centos', 'redhat', 'fedora': {
-      $puppet_master_package        = 'puppet-server'
+      $puppet_master_package        = 'puppet'
       $puppet_master_service        = 'puppetmaster'
       $puppet_agent_service         = 'puppet'
       $puppet_agent_name            = 'puppet'
@@ -38,7 +42,7 @@ class puppet::params {
       $puppet_ssldir                = '/var/lib/puppet/ssl'
     }
     'ubuntu', 'debian': {
-      $puppet_master_package        = 'puppetmaster'
+      $puppet_master_package        = 'puppet'
       $puppet_master_service        = 'puppetmaster'
       $puppet_agent_service         = 'puppet'
       $puppet_agent_name            = 'puppet'
