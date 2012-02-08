@@ -5,21 +5,21 @@
 # Parameters:
 #
 # Actions:
-# 
+#
 # Requires:
 #
 # Sample Usage:
 #
 class puppet::agent(
-  $puppet_defaults,
-  $puppet_agent_service,
-  $puppet_agent_name,
-  $puppet_conf,
   $puppet_server,
+  $puppet_defaults = $::puppet::params::puppet_defaults,
+  $puppet_agent_service = $::puppet::params::puppet_agent_service,
+  $puppet_agent_name = $::puppet::params::puppet_agent_name,
+  $puppet_conf = $::puppet::params::puppet_conf,
   $package_provider = undef,
-  $version
+  $version = 'present'
 ) inherits puppet::params {
-  
+
   if $kernel == "Linux" {
     file { $puppet_defaults:
       mode   => '0644',
