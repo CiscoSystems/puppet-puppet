@@ -8,8 +8,8 @@ templatedir=$confdir/templates
 prerun_command=/etc/puppet/etckeeper-commit-pre
 postrun_command=/etc/puppet/etckeeper-commit-post
 #external_nodes = /usr/bin/cobbler-ext-nodes
-<% if puppetmaster_address != "NONE" %>server=<%= puppetmaster_address %><% end %>
 pluginsync = true
+<% if puppetmaster_address != "" %>server=<%= puppetmaster_address %><% end %>
 
 [master]
 # These are needed when the puppetmaster is run by passenger
