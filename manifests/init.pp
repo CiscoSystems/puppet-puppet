@@ -12,6 +12,11 @@ class puppet($run_master = false, $run_agent = false, $puppetmaster_address = ""
 			notify +> Exec["restart-puppetmaster"]
 		}
 
+		file { "/etc/puppet/autosign.conf":
+			content => template('puppet/autosign.conf.erb'),
+			require => File["/etc/puppet"],
+		}
+
 		exec { "restart-puppetmaster":
 			command => "/usr/sbin/service puppetmaster restart",
 			require => Package[puppetmaster],
