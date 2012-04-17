@@ -18,3 +18,8 @@ ssl_client_header = SSL_CLIENT_S_DN
 ssl_client_verify_header = SSL_CLIENT_VERIFY
 storeconfigs = true
 thin_storeconfigs = true
+
+<% if puppetmaster_address %>
+[agent]
+server=<%= puppetmaster_address %>
+<% end %>
