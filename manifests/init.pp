@@ -14,7 +14,6 @@ class puppet($run_master = false, $run_agent = false, $puppetmaster_address = ""
 
 		file { "/etc/puppet/autosign.conf":
 			content => template('puppet/autosign.conf.erb'),
-			require => File["/etc/puppet"],
 		}
 
 		exec { "restart-puppetmaster":
