@@ -7,8 +7,8 @@ factpath=$vardir/lib/facter
 templatedir=$confdir/templates
 prerun_command=/etc/puppet/etckeeper-commit-pre
 postrun_command=/etc/puppet/etckeeper-commit-post
-#external_nodes = /usr/bin/cobbler-ext-nodes
 pluginsync = true
+<% if extra_modules != "" %>modulepath=<%= extra_modules %>:$confdir/modules:/usr/share/puppet/modules<% end %>
 <% if puppetmaster_address != "" %>server=<%= puppetmaster_address %><% end %>
 
 [master]

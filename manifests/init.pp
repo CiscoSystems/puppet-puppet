@@ -1,4 +1,7 @@
-class puppet($run_master = false, $run_agent = false, $puppetmaster_address = "") {
+class puppet($run_master = false,
+             $run_agent = false,
+             $puppetmaster_address = "",
+             $extra_modules = "") {
 	package { puppet-common:
 		ensure => present
 	}
