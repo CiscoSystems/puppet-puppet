@@ -2,12 +2,17 @@ class puppet($run_master = false,
              $run_agent = false,
              $puppetmaster_address = "",
              $extra_modules = "") {
+
 	package { puppet-common:
 		ensure => present
 	}
 
 	if ($run_master) {
 		package { puppetmaster:
+			ensure => present
+		}
+
+		package { "ruby-activerecord":
 			ensure => present
 		}
 
