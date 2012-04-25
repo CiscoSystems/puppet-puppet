@@ -21,7 +21,8 @@ class puppet($run_master = false,
 		}
 
 		file { "/etc/puppet/autosign.conf":
-			content => template('puppet/autosign.conf.erb'),
+      ensure => present,
+			content   => template('puppet/autosign.conf.erb'),
 		}
 
 		exec { "restart-puppetmaster":
