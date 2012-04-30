@@ -16,6 +16,10 @@ class puppet($run_master = false,
 			ensure => present
 		}
 
+		package { "ruby-sqlite3":
+			ensure => present
+		}
+
 		File <| title == "/etc/puppet/puppet.conf" |> {
 			notify +> Exec["restart-puppetmaster"]
 		}
