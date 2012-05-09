@@ -9,7 +9,7 @@ class puppet($run_master = false,
 	}
 
 	if ($run_master) {
-		package { puppetmaster:
+		package { "puppetmaster-passenger":
 			ensure => present
 		}
 
