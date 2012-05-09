@@ -31,8 +31,8 @@ class puppet($run_master = false,
 		}
 
 		exec { "restart-puppetmaster":
-			command => "/usr/sbin/service puppetmaster restart",
-			require => Package[puppetmaster],
+			command => "/usr/sbin/service apache2 restart",
+			require => Package["puppetmaster-passenger"],
 			refreshonly => true
 		}
 	}
