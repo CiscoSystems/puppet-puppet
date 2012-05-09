@@ -1,6 +1,7 @@
 class puppet($run_master = false,
              $run_agent = false,
              $puppetmaster_address = "",
+             $runinterval = 120,
              $extra_modules = "") {
 
 	package { puppet-common:
