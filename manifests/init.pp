@@ -13,6 +13,12 @@ class puppet($run_master = false,
 			ensure => present
 		}
 
+        file { "/var/lib/puppet/reports":
+            ensure => "directory",
+            owner => "puppet",
+            group => "puppet"
+        }
+
 		package { "ruby-activerecord":
 			ensure => present
 		}
@@ -26,7 +32,7 @@ class puppet($run_master = false,
 		}
 
 		file { "/etc/puppet/autosign.conf":
-      ensure => present,
+			ensure => present,
 			content   => template('puppet/autosign.conf.erb'),
 		}
 
