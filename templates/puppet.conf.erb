@@ -7,9 +7,11 @@ factpath=$vardir/lib/facter
 templatedir=$confdir/templates
 prerun_command=/etc/puppet/etckeeper-commit-pre
 postrun_command=/etc/puppet/etckeeper-commit-post
-pluginsync = true
+pluginsync=true
+runinterval=<%= runinterval %>
 <% if extra_modules != "" %>modulepath=<%= extra_modules %>:$confdir/modules:/usr/share/puppet/modules<% end %>
 <% if puppetmaster_address != "" %>server=<%= puppetmaster_address %><% end %>
+<% if certname != "" %>certname=<%= certname %><% end %>
 
 [master]
 # These are needed when the puppetmaster is run by passenger

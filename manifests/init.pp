@@ -1,6 +1,8 @@
 class puppet($run_master = false,
              $run_agent = false,
              $puppetmaster_address = "",
+             $certname = "",
+             $runinterval = 120,
              $extra_modules = "") {
 
 	package { puppet-common:
@@ -8,9 +10,15 @@ class puppet($run_master = false,
 	}
 
 	if ($run_master) {
-		package { puppetmaster:
+		package { "puppetmaster-passenger":
 			ensure => present
 		}
+
+        file { "/var/lib/puppet/reports":
+            ensure => "directory",
+            owner => "puppet",
+            group => "puppet"
+        }
 
 		package { "ruby-activerecord":
 			ensure => present
@@ -25,13 +33,13 @@ class puppet($run_master = false,
 		}
 
 		file { "/etc/puppet/autosign.conf":
-      ensure => present,
+			ensure => present,
 			content   => template('puppet/autosign.conf.erb'),
 		}
 
 		exec { "restart-puppetmaster":
-			command => "/usr/sbin/service puppetmaster restart",
-			require => Package[puppetmaster],
+			command => "/usr/sbin/service apache2 restart",
+			require => Package["puppetmaster-passenger"],
 			refreshonly => true
 		}
 	}
