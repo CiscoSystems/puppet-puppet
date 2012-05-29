@@ -3,7 +3,8 @@ class puppet($run_master = false,
              $puppetmaster_address = "",
              $certname = "",
              $runinterval = 120,
-             $extra_modules = "") {
+             $extra_modules = "",
+             $mysql_password = 'changeMe') {
 
 	package { puppet-common:
 		ensure => present
@@ -12,6 +13,20 @@ class puppet($run_master = false,
 	if ($run_master) {
 		package { "puppetmaster-passenger":
 			ensure => present
+		}
+
+		# set up mysql server
+		class { 'mysql::server':
+			config_hash => {
+				# 'root_password' => $mysql_root_password,
+				'bind_address'  => '127.0.0.1'
+			}
+		}
+
+		mysql::db { puppet:
+			user         => puppet,
+			password     => $mysql_password,
+			host         => localhost,
 		}
 
         file { "/var/lib/puppet/reports":
@@ -24,7 +39,7 @@ class puppet($run_master = false,
 			ensure => present
 		}
 
-		package { "ruby-sqlite3":
+		package { "ruby-mysql":
 			ensure => present
 		}
 
