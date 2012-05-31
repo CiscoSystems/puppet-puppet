@@ -2,6 +2,7 @@ class puppet($run_master = false,
              $run_agent = false,
              $puppetmaster_address = "",
              $certname = "",
+             $master_autosign_cert = undef,
              $runinterval = 120,
              $extra_modules = "",
              $mysql_password = 'changeMe') {
