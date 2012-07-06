@@ -19,7 +19,7 @@ class puppet($run_master = false,
 		# set up mysql server
 		class { 'mysql::server':
 			config_hash => {
-				# 'root_password' => $mysql_root_password,
+				'root_password' => $mysql_root_password,
 				'bind_address'  => '127.0.0.1'
 			}
 		}
