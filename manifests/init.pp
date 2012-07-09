@@ -5,6 +5,7 @@ class puppet($run_master = false,
              $master_autosign_cert = undef,
              $runinterval = 120,
              $extra_modules = "",
+             $mysql_root_password = 'changeMe',
              $mysql_password = 'changeMe') {
 
 	package { puppet-common:
