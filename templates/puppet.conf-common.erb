@@ -7,9 +7,11 @@ rundir                    = /var/run/puppet
 factpath                  = $vardir/lib/facter
 pluginsync                = true
 templatedir               = $confdir/templates
+<% if @etckepper_puppet %>
 <% if operatingsystem == "Ubuntu" and etckepper_puppet == "true" %>
 prerun_command            = /etc/puppet/etckeeper-commit-pre
 postrun_command           = /etc/puppet/etckeeper-commit-post
+<% end %>
 <% end %>
 
 [agent]
