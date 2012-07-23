@@ -1,7 +1,12 @@
 storeconfigs              = true
+<%= if dbadapter == "puppetdb" %>
+server                    = <%= dbserver %>
+storeconfigs_backend      = <%= dbadapter %>
+<%= else %>
 dbadapter                 = <%= dbadapter %>
 dbuser                    = <%= dbuser %>
 dbpassword                = <%= dbpassword %>
 dbserver                  = <%= dbserver %>
 dbsocket                  = <%= dbsocket %>
 dbmigrate                 = true
+<%= end %>

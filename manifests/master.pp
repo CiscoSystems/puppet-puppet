@@ -25,7 +25,7 @@
 #                               configuration file when Passenger is enabled
 #   [*puppet_docroot*]        - The DocumentRoot value used in the apache vhost
 #                               configuration file when Passenger is enabled
-#   [*puppet_server*]          - The server value used in the puppet agent
+#   [*puppet_server*]         - The server value used in the puppet agent
 #                                configuration file
 #   [*puppet_vardir*]         - The path to the puppet vardir
 #   [*puppet_passenger_port*] - The port on which puppet is listening when

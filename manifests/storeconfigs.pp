@@ -18,11 +18,7 @@ class puppet::storeconfigs (
     $dbsocket
 ) {
 
-  # This version of activerecord works with Ruby 1.8.5 and Centos 5.
-  # This ensure should be fixed.
-  Package['activerecord'] -> Class['puppet::storeconfigs']
-
-  case $dbadapter {
+   case $dbadapter {
     'sqlite3': {
       include puppet::storeconfigs::sqlite
     }
@@ -32,6 +28,12 @@ class puppet::storeconfigs (
           dbuser     => $dbuser,
           dbpassword => $dbpassword,
       }
+      # This version of activerecord works with Ruby 1.8.5 and Centos 5.
+      # This ensure should be fixed.
+      Package['activerecord'] -> Class['puppet::storeconfigs']
+    }
+    'puppetdb': {
+      require('puppetdb::terminus') 
     }
     default: { err("target dbadapter $dbadapter not implemented") }
   }
