@@ -25,6 +25,8 @@
 #                               configuration file when Passenger is enabled
 #   [*puppet_docroot*]        - The DocumentRoot value used in the apache vhost
 #                               configuration file when Passenger is enabled
+#   [*puppet_server*]          - The server value used in the puppet agent
+#                                configuration file
 #   [*puppet_vardir*]         - The path to the puppet vardir
 #   [*puppet_passenger_port*] - The port on which puppet is listening when
 #                               Passenger is enabled
@@ -74,6 +76,7 @@ class puppet::master (
   $puppet_passenger = false,
   $puppet_site = $::puppet::params::puppet_site,
   $puppet_docroot = $::puppet::params::puppet_docroot,
+  $puppet_server = $::puppet::params::puppet_server,
   $puppet_vardir = $::puppet::params::puppet_vardir,
   $puppet_passenger_port = false,
   $puppet_master_package = $::puppet::params::puppet_master_package,
