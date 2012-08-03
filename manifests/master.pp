@@ -82,6 +82,7 @@ class puppet::master (
   $puppet_passenger_class   = 'passenger',
   $puppet_site              = $::puppet::params::puppet_site,
   $puppet_server            = $::puppet::params::puppet_server,
+  $puppet_ssldir            = $::puppet::params::puppet_ssldir,
   $puppet_docroot           = $::puppet::params::puppet_docroot,
   $puppet_vardir            = $::puppet::params::puppet_vardir,
   $puppet_passenger_port    = false,
@@ -238,7 +239,7 @@ class puppet::master (
 
     service { $puppet_master_service:
       ensure    => true,
-      enable   => true,
+      enable    => true,
       require   => File[$puppet_conf],
       subscribe => Package[$puppet_master_package],
     }
