@@ -18,6 +18,8 @@ class puppet::params {
   }
   $modulepath                       = '/etc/puppet/modules'
   $puppet_logdir                    = '/var/log/puppet'
+  $puppet_user                      = 'puppet'
+  $puppet_group                     = 'puppet'
 
   $puppet_storeconfigs_password     = 'password'
   $storeconfigs_dbadapter           = 'mysql'

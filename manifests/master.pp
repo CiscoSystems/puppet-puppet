@@ -62,6 +62,8 @@
 #  }
 #
 class puppet::master (
+  $user_id                  = undef,
+  $group_id                 = undef,
   $modulepath               = $::puppet::params::modulepath,
   $confdir                  = $::puppet::params::confdir,
   $manifest                 = $::puppet::params::manifest,
@@ -75,6 +77,7 @@ class puppet::master (
   $certname                 = $::fqdn,
   $autosign                 = false,
   $dashboard_port           = 3000,
+  $puppet_conf              =  $::puppet::params::puppet_conf,
   $puppet_passenger         = false,
   $puppet_passenger_class   = 'passenger',
   $puppet_site              = $::puppet::params::puppet_site,
@@ -86,11 +89,58 @@ class puppet::master (
   $package_provider         = undef,
   $puppet_master_service    = $::puppet::params::puppet_master_service,
   $version                  = 'present',
+  $puppet_group             = $puppet::params::puppet_group,
   $puppet_server            = $puppet::params::puppet_server,
+  $puppet_user              = $puppet::params::puppet_use,
   $apache_serveradmin       = $puppet::params::apache_serveradmin
 ) inherits puppet::params {
-
   include concat::setup
+
+  #Setup folders
+  if !defined(File[$confdir]) {
+    file { $confdir:
+      require => Package[$puppet_master_package],
+      owner   => $puppet_user,
+      group   => $puppet_group,
+      notify  => $service_notify,
+    }
+  }
+
+  if !defined(File[$puppet_vardir]) {
+    file { $puppet_vardir:
+      ensure       => directory,
+      owner        => $puppet_user,
+      group        => $puppet_group,
+      recurse      => true,
+      recurselimit => '1',
+      notify       => $service_notify,
+    }
+  }
+
+  if ! defined(Concat[$puppet_conf]) {
+    concat { $puppet_conf:
+      mode    => '0644',
+      owner   => 'puppet',
+      group   => 'puppet',
+      require => $service_require,
+      notify  => $service_notify,
+    }
+  }
+
+  if !defined(User[$puppet_user]) {
+    user { $puppet_user:
+    ensure => present,
+    uid    => $user_id,
+    gid    => $puppet_group,
+    }
+  }
+
+  if !defined(Group[$puppet_group]) {
+    group { $puppet_group:
+    ensure => present,
+    gid    => $group_id,
+    }
+  }
 
   if $storeconfigs {
     class { 'puppet::storeconfigs':
@@ -129,8 +179,8 @@ class puppet::master (
       command   => "puppet cert --generate ${certname} --trace",
       unless    => "/bin/ls ${puppet_ssldir}/certs/${certname}.pem",
       path      => '/usr/bin:/usr/local/bin',
-#      before    => Class[$puppet_passenger_class],
-#      require   => Package[$puppet_master_package],
+      #before   => Class[$puppet_passenger_class],
+      #require  => Package[$puppet_master_package],
       logoutput => on_failure,
     }
 
@@ -148,7 +198,7 @@ class puppet::master (
       serveradmin        => $apache_serveradmin,
       servername         => $puppet_site,
       template           => 'puppet/apache2.conf.erb',
-      require            => [ File['/etc/puppet/rack/config.ru'], File['/etc/puppet/puppet.conf'] ],
+      require            => [ File['/etc/puppet/rack/config.ru'], File[$puppet_conf] ],
       ssl                => true,
     }
 
@@ -169,38 +219,28 @@ class puppet::master (
 
     concat::fragment { 'puppet.conf-master':
       order   => '05',
-      target  => '/etc/puppet/puppet.conf',
+      target  => $puppet_conf,
       content => template('puppet/puppet.conf-master.erb'),
     }
   } else {
 
+    notify {$puppet_conf: }
     $service_require = Package[$puppet_master_package]
-    $service_notify = Exec['puppet_master_start']
+    $service_notify = Service[$puppet_master_service]
 
-    Concat::Fragment['puppet.conf-master'] -> Exec['puppet_master_start']
+    Concat::Fragment['puppet.conf-master'] -> Service[$puppet_master_service]
 
     concat::fragment { 'puppet.conf-master':
       order   => '05',
-      target  => '/etc/puppet/puppet.conf',
+      target  => $puppet_conf,
       content => template('puppet/puppet.conf-master.erb'),
     }
 
-    exec { 'puppet_master_start':
-      command   => '/usr/bin/nohup puppet master &',
-      refresh   => '/usr/bin/pkill puppet && /usr/bin/nohup puppet master &',
-      unless    => '/bin/ps -ef | grep -v grep | /bin/grep \'puppet master\'',
-      require   => File['/etc/puppet/puppet.conf'],
+    service { $puppet_master_service:
+      ensure    => true,
+      enable   => true,
+      require   => File[$puppet_conf],
       subscribe => Package[$puppet_master_package],
-    }
-  }
-
-  if ! defined(Concat[$puppet_conf]) {
-    concat { $puppet_conf:
-      mode    => '0644',
-      owner   => 'puppet',
-      group   => 'puppet',
-      require => $service_require,
-      notify  => $service_notify,
     }
   }
 
@@ -211,24 +251,5 @@ class puppet::master (
       content => template('puppet/puppet.conf-common.erb'),
     }
   }
-
-  file { $puppet_vardir:
-    ensure       => directory,
-    owner        => 'puppet',
-    group        => 'puppet',
-    recurse      => true,
-    recurselimit => '1',
-    notify       => $service_notify,
-  }
-
-  if defined(File['/etc/puppet']) {
-    File ['/etc/puppet'] {
-      require +> Package[$puppet_master_package],
-      owner   => 'puppet',
-      group   => 'puppet',
-      notify  +> $service_notify
-    }
-  }
-
 }
 
