@@ -98,7 +98,7 @@ class puppet::master (
   include concat::setup
 
   #Setup folders
-  if !defined(File[$confdir]) {
+  if ! defined(File[$confdir]) {
     file { $confdir:
       require => Package[$puppet_master_package],
       owner   => $puppet_user,
@@ -106,8 +106,14 @@ class puppet::master (
       notify  => $service_notify,
     }
   }
+  else {
+    File [$confdir] {
+      require +> Package[$puppet_master_package],
+      notify  +> $service_notify
+    }
+  }
 
-  if !defined(File[$puppet_vardir]) {
+  if ! defined(File[$puppet_vardir]) {
     file { $puppet_vardir:
       ensure       => directory,
       owner        => $puppet_user,
@@ -128,7 +134,7 @@ class puppet::master (
     }
   }
 
-  if !defined(User[$puppet_user]) {
+  if ! defined(User[$puppet_user]) {
     user { $puppet_user:
     ensure => present,
     uid    => $user_id,
@@ -136,7 +142,7 @@ class puppet::master (
     }
   }
 
-  if !defined(Group[$puppet_group]) {
+  if ! defined(Group[$puppet_group]) {
     group { $puppet_group:
     ensure => present,
     gid    => $group_id,
