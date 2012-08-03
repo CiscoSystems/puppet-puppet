@@ -89,10 +89,10 @@ class puppet::master (
   $package_provider         = undef,
   $puppet_master_service    = $::puppet::params::puppet_master_service,
   $version                  = 'present',
-  $puppet_group             = $puppet::params::puppet_group,
-  $puppet_server            = $puppet::params::puppet_server,
-  $puppet_user              = $puppet::params::puppet_use,
-  $apache_serveradmin       = $puppet::params::apache_serveradmin
+  $puppet_group             = $::puppet::params::puppet_group,
+  $puppet_server            = $::puppet::params::puppet_server,
+  $puppet_user              = $::puppet::params::puppet_user,
+  $apache_serveradmin       = $::puppet::params::apache_serveradmin
 ) inherits puppet::params {
   include concat::setup
 
