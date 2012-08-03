@@ -88,7 +88,6 @@ class puppet::master (
   $version                  = 'present',
   $puppet_server            = $puppet::params::puppet_server,
   $apache_serveradmin       = $puppet::params::apache_serveradmin
->>>>>>> .merge_file_CQmCVb
 ) inherits puppet::params {
 
   include concat::setup
