@@ -1,3 +1,6 @@
+##
+#puppet origin: puppet.conf-common.erb
+
 [main]
 server                    = <%= puppet_server %>
 logdir                    = <%= puppet_logdir %>
@@ -16,4 +19,6 @@ postrun_command           = /etc/puppet/etckeeper-commit-post
 
 [agent]
 report                    = true
-environment               = production
+show_diff                 = true
+summarize                 = true
+environment               = <%= environment %>
