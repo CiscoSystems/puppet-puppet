@@ -38,7 +38,7 @@ class puppet::params {
 
   case $::operatingsystem {
     'centos', 'redhat', 'fedora': {
-      $puppet_master_package        = 'puppet'
+      $puppet_master_package        = 'puppet-server'
       $puppet_master_service        = 'puppetmaster'
       $puppet_agent_service         = 'puppet'
       $puppet_agent_name            = 'puppet'
@@ -50,7 +50,7 @@ class puppet::params {
       $puppet_ssldir                = '/var/lib/puppet/ssl'
     }
     'ubuntu', 'debian': {
-      $puppet_master_package        = 'puppet'
+      $puppet_master_package        = 'puppetmaster'
       $puppet_master_service        = 'puppetmaster'
       $puppet_agent_service         = 'puppet'
       $puppet_agent_name            = 'puppet'
