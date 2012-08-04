@@ -94,13 +94,6 @@ class puppet::master (
 ) inherits puppet::params {
   include concat::setup
 
-  file { $puppet_vardir:
-    ensure       => directory,
-    owner        => $puppet_user,
-    group        => $puppet_group,
-    notify       => $service_notify,
-  }
-
   if ! defined(User[$puppet_user]) {
     user { $puppet_user:
       ensure => present,
@@ -254,6 +247,13 @@ class puppet::master (
       notify  +> $service_notify,
       require +> Package[$puppet_master_package],
     }
+  }
+
+  file { $puppet_vardir:
+    ensure       => directory,
+    owner        => $puppet_user,
+    group        => $puppet_group,
+    notify       => $service_notify,
   }
 }
 
