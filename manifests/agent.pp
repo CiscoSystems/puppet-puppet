@@ -21,10 +21,11 @@ class puppet::agent(
   $version                = 'present',
   $puppet_agent_enabled   = true,
   $puppet_run_style       = 'service',
-  $puppet_run_interval    = 30
+  $puppet_run_interval    = 30,
   $user_id                = undef,
   $group_id               = undef,
-
+  $splay                  = 'UNSET',
+  $environment            = "production"
 ) inherits puppet::params {
 
   include concat::setup
@@ -142,4 +143,12 @@ class puppet::agent(
       content => template('puppet/puppet.conf-common.erb'),
     }
   }
+
+  concat::fragment { 'puppet.conf-agent':
+  order   => '01',
+  target  => $puppet_conf,
+  content => template('puppet/puppet.conf-agent.erb'),
+  notify  =>  $service_notify,
+  }
+
 }

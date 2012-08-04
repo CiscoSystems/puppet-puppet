@@ -1,0 +1,11 @@
+##
+#puppet origin: puppet.conf-agent.erb
+[agent]
+report                    = true
+show_diff                 = true
+summarize                 = true
+environment               = <%= environment %>
+
+<% if @splay != 'UNSET' -%>
+splay                     = <%= @splay %>
+<% end %>

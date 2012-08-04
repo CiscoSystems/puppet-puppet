@@ -1,6 +1,5 @@
 ##
 #puppet origin: puppet.conf-common.erb
-
 [main]
 server                    = <%= puppet_server %>
 logdir                    = <%= puppet_logdir %>
@@ -10,15 +9,8 @@ rundir                    = /var/run/puppet
 factpath                  = $vardir/lib/facter
 pluginsync                = true
 templatedir               = $confdir/templates
-<% if @etckepper_puppet %>
-<% if operatingsystem == "Ubuntu" and etckepper_puppet == "true" %>
+
+<% if @peratingsystem == "Ubuntu" and @etckepper_puppet == "true" %>
 prerun_command            = /etc/puppet/etckeeper-commit-pre
 postrun_command           = /etc/puppet/etckeeper-commit-post
 <% end %>
-<% end %>
-
-[agent]
-report                    = true
-show_diff                 = true
-summarize                 = true
-environment               = <%= environment %>

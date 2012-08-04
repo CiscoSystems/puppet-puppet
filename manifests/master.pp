@@ -193,7 +193,7 @@ class puppet::master (
     }
 
     concat::fragment { 'puppet.conf-master':
-      order   => '05',
+      order   => '02',
       target  => $puppet_conf,
       content => template('puppet/puppet.conf-master.erb'),
     }
@@ -211,7 +211,7 @@ class puppet::master (
     Concat::Fragment['puppet.conf-master'] -> Service[$puppet_master_service]
 
     concat::fragment { 'puppet.conf-master':
-      order   => '05',
+      order   => '02',
       target  => $puppet_conf,
       content => template('puppet/puppet.conf-master.erb'),
       notify  =>  $service_notify,
