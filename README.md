@@ -10,7 +10,7 @@ This is currently going under a massive refactor
 ### For a puppet master ###
 
 ```ruby
-class { 'puppet::master':$
+class { 'puppet::master':
      autosign                  => true,
      storeconfigs              => true,
      storeconfigs_dbadapter    => 'puppetdb',
@@ -25,3 +25,4 @@ class { 'puppet::master':$
  	environment				  => production,
  	splay                     => true,
  }
+ ```
