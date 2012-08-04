@@ -5,7 +5,6 @@
 # Parameters:
 #   [*modulepath*]            - The modulepath configuration value used in
 #                               puppet.conf
-#   [*confdir*]               - The confdir configuration value in puppet.conf
 #   [*manifest*]              - The manifest configuration value in puppet.conf
 #   [*storeconfigs*]          - Boolean determining whether storeconfigs is
 #                               to be enabled.
@@ -65,7 +64,6 @@ class puppet::master (
   $user_id                  = undef,
   $group_id                 = undef,
   $modulepath               = $::puppet::params::modulepath,
-  $confdir                  = $::puppet::params::confdir,
   $manifest                 = $::puppet::params::manifest,
   $storeconfigs             = false,
   $storeconfigs_dbadapter   = $::puppet::params::storeconfigs_dbadapter,
@@ -77,7 +75,7 @@ class puppet::master (
   $certname                 = $::fqdn,
   $autosign                 = false,
   $dashboard_port           = 3000,
-  $puppet_conf              =  $::puppet::params::puppet_conf,
+  $puppet_conf              = $::puppet::params::puppet_conf,
   $puppet_passenger         = false,
   $puppet_passenger_class   = 'passenger',
   $puppet_site              = $::puppet::params::puppet_site,
@@ -97,55 +95,25 @@ class puppet::master (
 ) inherits puppet::params {
   include concat::setup
 
-  #Setup folders
-  if ! defined(File[$confdir]) {
-    file { $confdir:
-      require => Package[$puppet_master_package],
-      owner   => $puppet_user,
-      group   => $puppet_group,
-      notify  => $service_notify,
-    }
-  }
-  else {
-    File [$confdir] {
-      require +> Package[$puppet_master_package],
-      notify  +> $service_notify
-    }
-  }
-
-  if ! defined(File[$puppet_vardir]) {
-    file { $puppet_vardir:
-      ensure       => directory,
-      owner        => $puppet_user,
-      group        => $puppet_group,
-      recurse      => true,
-      recurselimit => '1',
-      notify       => $service_notify,
-    }
-  }
-
-  if ! defined(Concat[$puppet_conf]) {
-    concat { $puppet_conf:
-      mode    => '0644',
-      owner   => 'puppet',
-      group   => 'puppet',
-      require => $service_require,
-      notify  => $service_notify,
-    }
+  file { $puppet_vardir:
+    ensure       => directory,
+    owner        => $puppet_user,
+    group        => $puppet_group,
+    notify       => $service_notify,
   }
 
   if ! defined(User[$puppet_user]) {
     user { $puppet_user:
-    ensure => present,
-    uid    => $user_id,
-    gid    => $puppet_group,
+      ensure => present,
+      uid    => $user_id,
+      gid    => $puppet_group,
     }
   }
 
   if ! defined(Group[$puppet_group]) {
     group { $puppet_group:
-    ensure => present,
-    gid    => $group_id,
+      ensure => present,
+      gid    => $group_id,
     }
   }
 
@@ -230,10 +198,15 @@ class puppet::master (
       content => template('puppet/puppet.conf-master.erb'),
     }
   } else {
-
-    notify {$puppet_conf: }
     $service_require = Package[$puppet_master_package]
     $service_notify = Service[$puppet_master_service]
+
+    service { $puppet_master_service:
+      ensure    => true,
+      enable    => true,
+      require   => File[$puppet_conf],
+      subscribe => Package[$puppet_master_package],
+    }
 
     Concat::Fragment['puppet.conf-master'] -> Service[$puppet_master_service]
 
@@ -241,13 +214,23 @@ class puppet::master (
       order   => '05',
       target  => $puppet_conf,
       content => template('puppet/puppet.conf-master.erb'),
+      notify  =>  $service_notify,
     }
+  }
 
-    service { $puppet_master_service:
-      ensure    => true,
-      enable    => true,
-      require   => File[$puppet_conf],
-      subscribe => Package[$puppet_master_package],
+  if ! defined(Concat[$puppet_conf]) {
+    concat { $puppet_conf:
+      mode    => '0644',
+      owner   => 'puppet',
+      group   => 'puppet',
+      require => $puppet::master::service_require,
+      notify  => $puppet::master::service_notify,
+    }
+  }
+  else {
+    Concat<| title == $puppet_conf |> {
+      require +> $service_require,
+      notify  +> $service_notify,
     }
   }
 
@@ -256,6 +239,21 @@ class puppet::master (
       order   => '00',
       target  => $puppet_conf,
       content => template('puppet/puppet.conf-common.erb'),
+    }
+  }
+
+  if ! defined(File[$::puppet::params::confdir]) {
+    file { $::puppet::params::confdir:
+      require => Package[$puppet_master_package],
+      owner   => $puppet_user,
+      group   => $puppet_group,
+      notify  => $service_notify,
+    }
+  }
+  else {
+    File<| title == $::puppet::params::confdir |> {
+      notify  +> $service_notify,
+      require +> Package[$puppet_master_package],
     }
   }
 }
