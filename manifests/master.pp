@@ -213,8 +213,8 @@ class puppet::master (
   if ! defined(Concat[$puppet_conf]) {
     concat { $puppet_conf:
       mode    => '0644',
-      owner   => 'puppet',
-      group   => 'puppet',
+      owner   => $puppet_user,
+      group   => $puppet_group,
       require => $puppet::master::service_require,
       notify  => $puppet::master::service_notify,
     }
@@ -237,6 +237,7 @@ class puppet::master (
   if ! defined(File[$::puppet::params::confdir]) {
     file { $::puppet::params::confdir:
       require => Package[$puppet_master_package],
+      ensure  => directory,
       owner   => $puppet_user,
       group   => $puppet_group,
       notify  => $service_notify,
