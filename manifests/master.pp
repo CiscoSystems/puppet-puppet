@@ -109,26 +109,6 @@ class puppet::master (
     }
   }
 
-  if $storeconfigs {
-    class { 'puppet::storeconfigs':
-      dbadapter  => $storeconfigs_dbadapter,
-      dbuser     => $storeconfigs_dbuser,
-      dbpassword => $storeconfigs_dbpassword,
-      dbserver   => $storeconfigs_dbserver,
-      dbsocket   => $storeconfigs_dbsocket,
-    }
-
-    if $::operatingsystem == 'debian' {
-      package{ 'activerecord':
-        ensure => present,
-        name   => 'libactiverecord-ruby'
-      }
-      package{ 'libmysql-ruby':
-        ensure => present,
-      }
-    }
-  }
-
   if ! defined(Package[$puppet_master_package]) {
     package { $puppet_master_package:
       ensure   => $version,
@@ -214,5 +194,15 @@ class puppet::master (
     group        => $puppet_group,
     notify       => $service_notify,
   }
-}
 
+  if $storeconfigs {
+    class { 'puppet::storeconfigs':
+      dbadapter  => $storeconfigs_dbadapter,
+      dbuser     => $storeconfigs_dbuser,
+      dbpassword => $storeconfigs_dbpassword,
+      dbserver   => $storeconfigs_dbserver,
+      dbsocket   => $storeconfigs_dbsocket,
+    }
+    $service_notify -> Class['puppet::storeconfigs']
+  }
+}
