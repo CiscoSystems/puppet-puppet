@@ -11,6 +11,7 @@
 # Sample Usage:
 #
 class puppet::storeconfigs (
+    $puppetdb_host,
     $dbadapter,
     $dbuser,
     $dbpassword,
@@ -23,8 +24,18 @@ class puppet::storeconfigs (
       include puppet::storeconfigs::sqlite
     }
     'mysql': {
-      class {
-        "puppet::storeconfigs::mysql":
+
+      if $::osfamily == 'Debian' {
+        package{ 'activerecord':
+          ensure => present,
+          name   => 'libactiverecord-ruby'
+        }
+        package{ 'libmysql-ruby':
+          ensure => present,
+        }
+      }
+
+      class { "puppet::storeconfigs::mysql":
           dbuser     => $dbuser,
           dbpassword => $dbpassword,
       }
@@ -33,7 +44,10 @@ class puppet::storeconfigs (
       Package['activerecord'] -> Class['puppet::storeconfigs']
     }
     'puppetdb': {
-      require('puppetdb::terminus') 
+      class {'puppetdb::terminus': 
+        puppetmaster_service => $puppet::master::service_notify,
+        puppetdb_host        => $puppetdb_host
+      }
     }
     default: { err("target dbadapter $dbadapter not implemented") }
   }
@@ -45,4 +59,3 @@ class puppet::storeconfigs (
   }
 
 }
-
