@@ -15,7 +15,9 @@ class puppet::storeconfigs (
     $dbuser,
     $dbpassword,
     $dbserver,
-    $dbsocket
+    $dbsocket,
+    $puppet_conf,
+    $puppet_service
 ) {
 
    case $dbadapter {
@@ -23,28 +25,11 @@ class puppet::storeconfigs (
       include puppet::storeconfigs::sqlite
     }
     'mysql': {
-
-      if $::osfamily == 'Debian' {
-        package{ 'activerecord':
-          ensure => present,
-          name   => 'libactiverecord-ruby'
-        }
-        package{ 'libmysql-ruby':
-          ensure => present,
-        }
-      }
-
-      class { "puppet::storeconfigs::mysql":
-          dbuser     => $dbuser,
-          dbpassword => $dbpassword,
-      }
-      # This version of activerecord works with Ruby 1.8.5 and Centos 5.
-      # This ensure should be fixed.
-      Package['activerecord'] -> Class['puppet::storeconfigs']
+      include puppet::storeconfigs::mysql
     }
     'puppetdb': {
       class {'puppetdb::terminus': 
-        puppetmaster_service => $puppet::master::service_notify,
+        puppetmaster_service => $puppet_service,
         puppetdb_host        => $dbserver
       }
     }
@@ -53,8 +38,9 @@ class puppet::storeconfigs (
 
   concat::fragment { 'puppet.conf-master-storeconfig':
     order   => '03',
-    target  => "/etc/puppet/puppet.conf",
-    content => template("puppet/puppet.conf-master-storeconfigs.erb");
+    target  => $puppet_conf,
+    content => template("puppet/puppet.conf-master-storeconfigs.erb"),
+    notify  => $puppet_service,
   }
 
 }

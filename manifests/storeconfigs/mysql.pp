@@ -1,27 +1,34 @@
-class puppet::storeconfigs::mysql (
-    $dbuser,
-    $dbpassword,
-    $install_packages = false
-  ){
+class puppet::storeconfigs::mysql {
+  case $::operatingsystem
+  {
+    'ubuntu', 'debian':{
+      package{ 'libactiverecord-ruby':
+        ensure => installed,
+      }
 
-  include puppet::params
+      package{ 'libmysql-ruby':
+        ensure => installed,
+      }
+    }
+    'centos', 'redhat', 'fedora':{
+       package{ 'mysql-devel':
+          ensure => installed,
+       }
 
-   if $install_packages {
-     package { $puppet::params::puppet_storeconfigs_packages:
-       ensure => installed,
-     }
+       package{'mysql':
+          ensure => installed,
+       }
 
-     package { 'mysql':
-       ensure   => installed,
-       provider => 'gem',
-     }
-  }
+       package { "ruby-mysql":
+         ensure => installed,
+       }
 
-  mysql::db { 'puppet':
-    user     => $dbuser,
-    password => $dbpassword,
-    charset  => 'utf8',
-    host     => 'localhost',
-    grant    => 'all',
+       package { "rubygem-activerecord":
+         ensure => installed,
+       }
+    }
+    default: {
+      err('sqlite support is not completed for your OS')
+    } 
   }
 }

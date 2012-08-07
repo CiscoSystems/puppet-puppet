@@ -1,14 +1,16 @@
 ##
 #puppet origin: puppet.conf-master-storeconfig.erb
 storeconfigs              = true
-<% if dbadapter == "puppetdb" %>
+<% if dbadapter == 'puppetdb' %>
 server                    = <%= dbserver %>
 storeconfigs_backend      = <%= dbadapter %>
-<% else %>
+<% elsif dbadapter == 'mysql' %>
 dbadapter                 = <%= dbadapter %>
 dbuser                    = <%= dbuser %>
 dbpassword                = <%= dbpassword %>
 dbserver                  = <%= dbserver %>
 dbsocket                  = <%= dbsocket %>
 dbmigrate                 = true
+<% elsif dbadapter == 'sqlite3' %>
+dbadapter                 = sqlite3
 <% end %>

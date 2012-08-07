@@ -3,6 +3,8 @@
 # This class installs and configures a Puppet master
 #
 # Parameters:
+#   [*user_id*]               - Userid of the puppet user
+#   [*group_id*]              - Groupid of the puppet groud
 #   [*modulepath*]            - The modulepath configuration value used in
 #                               puppet.conf
 #   [*manifest*]              - The manifest configuration value in puppet.conf
@@ -13,26 +15,25 @@
 #   [*storeconfigs_dbpassword*] - The database password used with storeconfigs
 #   [*storeconfigs_dbserver*]   - Fqdn of the storeconfigs database server
 #   [*storeconfigs_dbsocket*]   - The path to the mysql socket file
-#   [*install_mysql_pkgs*]      - Boolean determining whether mysql and related
-#                                 devel packages should be installed.
 #   [*certname*]              - The certname configuration value in puppet.conf
 #   [*autosign*]              - The autosign configuration value in puppet.conf
 #   [*dashboard_port*]          - The port on which puppet-dashboard should run
+#   [*puppet_conf*]           - The puppet configuration file path
 #   [*puppet_passenger*]      - Boolean value to determine whether puppet is
 #                               to be run with Passenger
 #   [*puppet_passenger_class*]- string which determines which puppet class
 #                               holds the passenger definition
 #   [*puppet_site*]           - The VirtualHost value used in the apache vhost
 #                               configuration file when Passenger is enabled
+#   [*puppet_ssldir*]         - Puppets ssl dir
 #   [*puppet_docroot*]        - The DocumentRoot value used in the apache vhost
 #                               configuration file when Passenger is enabled
-#   [*puppet_server*]         - The server value used in the puppet agent
-#                                configuration file
 #   [*puppet_vardir*]         - The path to the puppet vardir
 #   [*puppet_passenger_port*] - The port on which puppet is listening when
 #                               Passenger is enabled
 #   [*puppet_master_package*]   - The name of the puppet master package
 #   [*package_provider*]        - The provider used for package installation
+#   [*puppet_master_service*]   - The serice that is used to control the puppetmaster
 #   [*version*]               - The value of the ensure parameter for the
 #                               puppet master and agent packages
 #
@@ -43,7 +44,6 @@
 #  Class['concat']
 #  Class['stdlib']
 #  Class['concat::setup']
-#  Class['mysql'] (conditionally)
 #
 # Sample Usage:
 #
@@ -54,10 +54,8 @@
 #
 #  class { "puppet::master":
 #    modulepath => inline_template("<%= modulepath.join(':') %>"),
-#    dbadapter  => "mysql",
-#    dbuser     => "puppet",
-#    dbpassword => "password"
-#    dbsocket   => "/var/run/mysqld/mysqld.sock",
+#    dbadapter  => 'puppetdb',
+#    storeconfigs_dbserver     => 'master.puppetlabs.vm',
 #  }
 #
 class puppet::master (
@@ -71,10 +69,9 @@ class puppet::master (
   $storeconfigs_dbpassword  = $::puppet::params::storeconfigs_dbpassword,
   $storeconfigs_dbserver    = $::puppet::params::storeconfigs_dbserver,
   $storeconfigs_dbsocket    = $::puppet::params::storeconfigs_dbsocket,
-  $install_mysql_pkgs       = $::puppet::params::puppet_storeconfigs_packages,
   $certname                 = $::fqdn,
   $autosign                 = false,
-  $dashboard_port           = 3000,
+  $dashboard_port           = 'UNSET',
   $puppet_conf              = $::puppet::params::puppet_conf,
   $puppet_passenger         = false,
   $puppet_passenger_class   = 'passenger',
@@ -88,7 +85,6 @@ class puppet::master (
   $puppet_master_service    = $::puppet::params::puppet_master_service,
   $version                  = 'present',
   $puppet_group             = $::puppet::params::puppet_group,
-  $puppet_server            = $::puppet::params::puppet_server,
   $puppet_user              = $::puppet::params::puppet_user,
   $apache_serveradmin       = $::puppet::params::apache_serveradmin
 ) inherits puppet::params {
@@ -124,8 +120,8 @@ class puppet::master (
       puppet_passenger_port  => $puppet_passenger_port,
       puppet_docroot         => $puppet_docroot,
       apache_serveradmin     => $apache_serveradmin,
-      puppet_site           => $puppet_site,
-      puppet_conf           => $puppet_conf,
+      puppet_site            => $puppet_site,
+      puppet_conf            => $puppet_conf,
     }
   } else {
     $service_require = Package[$puppet_master_package]
@@ -197,11 +193,13 @@ class puppet::master (
 
   if $storeconfigs {
     class { 'puppet::storeconfigs':
-      dbadapter     => $storeconfigs_dbadapter,
-      dbuser        => $storeconfigs_dbuser,
-      dbpassword    => $storeconfigs_dbpassword,
-      dbserver      => $storeconfigs_dbserver,
-      dbsocket      => $storeconfigs_dbsocket,
+      dbadapter       => $storeconfigs_dbadapter,
+      dbuser          => $storeconfigs_dbuser,
+      dbpassword      => $storeconfigs_dbpassword,
+      dbserver        => $storeconfigs_dbserver,
+      dbsocket        => $storeconfigs_dbsocket,
+      puppet_service  => $service_notify,
+      puppet_conf     => $puppet_conf, 
     }
   }
 }
