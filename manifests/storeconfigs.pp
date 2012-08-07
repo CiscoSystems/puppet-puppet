@@ -11,7 +11,6 @@
 # Sample Usage:
 #
 class puppet::storeconfigs (
-    $puppetdb_host,
     $dbadapter,
     $dbuser,
     $dbpassword,
@@ -46,7 +45,7 @@ class puppet::storeconfigs (
     'puppetdb': {
       class {'puppetdb::terminus': 
         puppetmaster_service => $puppet::master::service_notify,
-        puppetdb_host        => $puppetdb_host
+        puppetdb_host        => $dbserver
       }
     }
     default: { err("target dbadapter $dbadapter not implemented") }

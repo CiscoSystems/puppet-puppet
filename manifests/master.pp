@@ -76,7 +76,6 @@ class puppet::master (
   $autosign                 = false,
   $dashboard_port           = 3000,
   $puppet_conf              = $::puppet::params::puppet_conf,
-  $puppetdb_host            = $::fqdn,
   $puppet_passenger         = false,
   $puppet_passenger_class   = 'passenger',
   $puppet_site              = $::puppet::params::puppet_site,
@@ -203,7 +202,6 @@ class puppet::master (
       dbpassword    => $storeconfigs_dbpassword,
       dbserver      => $storeconfigs_dbserver,
       dbsocket      => $storeconfigs_dbsocket,
-      puppetdb_host => puppetdb_host,
     }
   }
 }
