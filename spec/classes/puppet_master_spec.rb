@@ -10,7 +10,11 @@ describe 'puppet::master', :type => :class do
                 :version                => 'present',
                 :puppet_conf            => '/etc/puppet/puppet.conf',
                 :puppet_master_package  => 'puppetmaster',
-                :puppet_master_service  => 'puppetmaster'
+                :puppet_master_service  => 'puppetmaster',
+                :modulepath             => '/etc/puppet/modules',
+                :manifest               => '/etc/puppet/manifests/site.pp',
+                :autosign               => 'true',
+                :certname               => 'test.example.com'
             }
         end
 
@@ -44,7 +48,11 @@ describe 'puppet::master', :type => :class do
             should contain_concat__fragment('puppet.conf-master').with(
                 :order      => '02',
                 :target     => params[:puppet_conf],
-                :notify     => "Service[#{params[:puppet_master_service]}]"
+                :notify     => "Service[#{params[:puppet_master_service]}]",
+                :content    => /modulepath\s*= #{params[:modulepath]}/,
+                :content    => /manifest\s*= #{params[:manifest]}/,
+                :content    => /autosign\s*= #{params[:autosign]}/,
+                :content    => /certname\s*= #{params[:certname]}/
             )
             should contain_concat(params[:puppet_conf]).with(
                 :mode   => '0644',
@@ -85,6 +93,10 @@ describe 'puppet::master', :type => :class do
                 :puppet_conf            => '/etc/puppet/puppet.conf',
                 :puppet_master_package  => 'puppetmaster',
                 :puppet_master_service  => 'puppetmaster',
+                :modulepath             => '/etc/puppet/modules',
+                :manifest               => '/etc/puppet/manifests/site.pp',
+                :autosign               => 'true',
+                :certname               => 'test.example.com',
                 :storeconfigs           => 'true',
                 :storeconfigs_dbadapter => 'puppetdb'
             }
@@ -112,7 +124,11 @@ describe 'puppet::master', :type => :class do
             should contain_concat__fragment('puppet.conf-master').with(
                 :order      => '02',
                 :target     => params[:puppet_conf],
-                :notify     => "Service[#{params[:puppet_master_service]}]"
+                :notify     => "Service[#{params[:puppet_master_service]}]",
+                :content    => /modulepath\s*= #{params[:modulepath]}/,
+                :content    => /manifest\s*= #{params[:manifest]}/,
+                :content    => /autosign\s*= #{params[:autosign]}/,
+                :content    => /certname\s*= #{params[:certname]}/
             )
             should contain_concat(params[:puppet_conf]).with(
                 :mode   => '0644',
