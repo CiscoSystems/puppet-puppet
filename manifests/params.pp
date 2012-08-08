@@ -75,6 +75,8 @@ class puppet::params {
       $puppet_vardir                = '/var/lib/puppet'
       $puppet_ssldir                = '/etc/puppet/ssl'
     }
+    default: {
+      err('The Puppet module does not support your os')
+    }
   }
-
 }

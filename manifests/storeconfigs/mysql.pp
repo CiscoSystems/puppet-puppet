@@ -11,24 +11,20 @@ class puppet::storeconfigs::mysql {
       }
     }
     'centos', 'redhat', 'fedora':{
-       package{ 'mysql-devel':
-          ensure => installed,
-       }
+      package{ 'mysql-devel':
+        ensure => installed,
+      }
 
-       package{'mysql':
-          ensure => installed,
-       }
+      package { 'ruby-mysql':
+        ensure => installed,
+      }
 
-       package { "ruby-mysql":
-         ensure => installed,
-       }
-
-       package { "rubygem-activerecord":
-         ensure => installed,
-       }
+      package { 'rubygem-activerecord':
+        ensure => installed,
+      }
     }
     default: {
       err('sqlite support is not completed for your OS')
-    } 
+    }
   }
 }

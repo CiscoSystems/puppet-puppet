@@ -55,10 +55,10 @@ describe 'puppet::master', :type => :class do
                 :content    => /certname\s*= #{params[:certname]}/
             )
             should contain_concat(params[:puppet_conf]).with(
-                :mode   => '0644',
-                :owner  => params[:puppet_user],
-                :group  => params[:puppet_group],
-                :notify => "Service[#{params[:puppet_master_service]}]"
+                :mode    => '0644',
+                :owner   => params[:puppet_user],
+                :group   => params[:puppet_group],
+                :notify  => "Service[#{params[:puppet_master_service]}]"
 
             )
             should contain_file('/etc/puppet').with(

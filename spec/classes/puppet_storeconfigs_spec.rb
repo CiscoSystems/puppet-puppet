@@ -21,7 +21,7 @@ describe 'puppet::storeconfigs', :type => :class do
             }
         end
          it {
-                should include_class('puppetdb::terminus')
+                should include_class('puppet::storeconfigs::puppetdb')
                 should contain_concat__fragment('puppet.conf-master-storeconfig').with(
                     :order      => '03',
                     :target     => params[:puppet_conf],

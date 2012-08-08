@@ -2,6 +2,6 @@ fixtures:
     repositories:
         "stdlib": "git://github.com/puppetlabs/puppetlabs-stdlib.git"
         'concat': "git://github.com/ripienaar/puppet-concat.git"
-        'puppetdb': "git://github.com/stephenrjohnson/puppetlabs-puppetdb.git"
+#        'puppetdb': "git://github.com/stephenrjohnson/puppetlabs-puppetdb.git"
     symlinks:
         "puppet": "#{source_dir}"

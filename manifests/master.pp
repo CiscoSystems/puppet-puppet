@@ -149,7 +149,7 @@ class puppet::master (
       mode    => '0644',
       owner   => $puppet_user,
       group   => $puppet_group,
-      require => $puppet::master::service_require,
+      require => [$puppet::master::service_require,File[$::puppet::params::confdir]],
       notify  => $puppet::master::service_notify,
     }
   }
@@ -170,8 +170,8 @@ class puppet::master (
 
   if ! defined(File[$::puppet::params::confdir]) {
     file { $::puppet::params::confdir:
-      require => Package[$puppet_master_package],
       ensure  => directory,
+      require => Package[$puppet_master_package],
       owner   => $puppet_user,
       group   => $puppet_group,
       notify  => $service_notify,
@@ -189,6 +189,7 @@ class puppet::master (
     owner        => $puppet_user,
     group        => $puppet_group,
     notify       => $service_notify,
+    require      => Package[$puppet_master_package]
   }
 
   if $storeconfigs {
@@ -199,7 +200,7 @@ class puppet::master (
       dbserver        => $storeconfigs_dbserver,
       dbsocket        => $storeconfigs_dbsocket,
       puppet_service  => $service_notify,
-      puppet_conf     => $puppet_conf, 
+      puppet_conf     => $puppet_conf,
     }
   }
 }

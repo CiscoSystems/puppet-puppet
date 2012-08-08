@@ -18,9 +18,9 @@ class puppet::storeconfigs (
     $dbsocket,
     $puppet_conf,
     $puppet_service
-) {
+) inherits puppet::params {
 
-   case $dbadapter {
+  case $dbadapter {
     'sqlite3': {
       include puppet::storeconfigs::sqlite
     }
@@ -28,9 +28,10 @@ class puppet::storeconfigs (
       include puppet::storeconfigs::mysql
     }
     'puppetdb': {
-      class {'puppetdb::terminus': 
+      class {'puppet::storeconfigs::puppetdb':
         puppetmaster_service => $puppet_service,
-        puppetdb_host        => $dbserver
+        puppetdb_host        => $dbserver,
+        puppet_confdir       => $::puppet::params::confdir,
       }
     }
     default: { err("target dbadapter $dbadapter not implemented") }
@@ -39,8 +40,7 @@ class puppet::storeconfigs (
   concat::fragment { 'puppet.conf-master-storeconfig':
     order   => '03',
     target  => $puppet_conf,
-    content => template("puppet/puppet.conf-master-storeconfigs.erb"),
+    content => template('puppet/puppet.conf-master-storeconfigs.erb'),
     notify  => $puppet_service,
   }
-
 }
