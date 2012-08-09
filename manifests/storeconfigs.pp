@@ -1,46 +1,36 @@
-# Class: puppet::storeconfiguration
-#
-# This class installs and configures Puppet's stored configuration capability
-#
-# Parameters:
-#
-# Actions:
-#
-# Requires:
-#
-# Sample Usage:
-#
-class puppet::storeconfigs (
-    $dbadapter,
-    $dbuser,
-    $dbpassword,
+class puppet::storeconfigs(
     $dbserver,
-    $dbsocket,
-    $puppet_conf,
-    $puppet_service
-) inherits puppet::params {
-
-  case $dbadapter {
-    'sqlite3': {
-      include puppet::storeconfigs::sqlite
-    }
-    'mysql': {
-      include puppet::storeconfigs::mysql
-    }
-    'puppetdb': {
-      class {'puppet::storeconfigs::puppetdb':
-        puppetmaster_service => $puppet_service,
-        puppetdb_host        => $dbserver,
-        puppet_confdir       => $::puppet::params::confdir,
-      }
-    }
-    default: { err("target dbadapter $dbadapter not implemented") }
+    $dbport,
+    $puppet_service,
+    $puppet_confdir = '/etc/puppet/',
+    $puppet_conf = '/etc/puppet/puppet.comf',
+)
+{
+  package { "puppetdb-terminus":
+    ensure  => present,
   }
 
+  # TODO: this will overwrite any existing routes.yaml;
+  #  to handle this properly we should just be ensuring
+  #  that the proper lines exist
+  file { "$puppet_confdir/routes.yaml":
+    ensure      => file,
+    source      => 'puppet:///modules/puppet/routes.yaml',
+    notify      => $puppet_service,
+    require     => Package['puppetdb-terminus'],
+  }
+
+  # TODO: Add port support 
+  file { "$puppet_confdir/puppetdb.conf":
+    ensure      => file,
+    content     => template('puppet/puppetdb.conf.erb'),
+    require     => File["$puppet_confdir/routes.yaml"],
+    notify      => $puppet_service,
+  }
   concat::fragment { 'puppet.conf-master-storeconfig':
     order   => '03',
     target  => $puppet_conf,
-    content => template('puppet/puppet.conf-master-storeconfigs.erb'),
+    content => template("puppet/puppet.conf-master-storeconfigs.erb"),
     notify  => $puppet_service,
   }
 }

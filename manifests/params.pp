@@ -20,13 +20,8 @@ class puppet::params {
   $puppet_logdir                    = '/var/log/puppet'
   $puppet_user                      = 'puppet'
   $puppet_group                     = 'puppet'
-
-  $puppet_storeconfigs_password     = 'password'
-  $storeconfigs_dbadapter           = 'mysql'
-  $storeconfigs_dbuser              = 'puppet'
-  $storeconfigs_dbpassword          = 'password'
-  $storeconfigs_dbserver            = 'localhost'
-  $storeconfigs_dbsocket            = '/var/run/mysqld/mysqld.sock'
+  $storeconfigs_dbserver            = $::fqdn
+  $storeconfigs_dbport              = '8081'
   $certname                         = $::fqdn
   $confdir                          = '/etc/puppet'
   $manifest                         = '/etc/puppet/manifests/site.pp'
@@ -48,6 +43,9 @@ class puppet::params {
       $puppet_conf                  = '/etc/puppet/puppet.conf'
       $puppet_vardir                = '/var/lib/puppet'
       $puppet_ssldir                = '/var/lib/puppet/ssl'
+      $passenger_package            = ''
+      $rails_package                = ''
+      $rack_package                 = ''
     }
     'ubuntu', 'debian': {
       $puppet_master_package        = 'puppetmaster'
@@ -60,6 +58,9 @@ class puppet::params {
       $puppet_conf                  = '/etc/puppet/puppet.conf'
       $puppet_vardir                = '/var/lib/puppet'
       $puppet_ssldir                = '/var/lib/puppet/ssl'
+      $passenger_package            = 'libapache2-mod-passenger'
+      $rails_package                = 'rails'
+      $rack_package                 = 'librack-ruby'
     }
     'freebsd': {
       $puppet_agent_service         = 'puppet'
