@@ -11,50 +11,52 @@ class puppet::passenger(
   include puppet::params
 
     case $::operatingsystem {
-     'ubuntu', 'debian': {
-      
-      if ! defined(Package[$::puppet::params::passenger_package]) {
-        package{"$::puppet::params::passenger_package":
-          ensure => 'present',
-          before => File['/etc/puppet/rack'],
-        }
-      }else {
-        Package<| title == $::puppet::params::passenger_package |> {
-          notify +> Service['httpd'],
-        }
-      }
+      'ubuntu', 'debian': {
 
-      if ! defined(Package[$::puppet::params::rails_package]) {
-        package{"$::puppet::params::rails_package":
-          ensure => 'present',
-          before => File['/etc/puppet/rack'],
+        if ! defined(Package[$::puppet::params::passenger_package]) {
+          package{$::puppet::params::passenger_package:
+            ensure => 'present',
+            before => File['/etc/puppet/rack'],
+          }
+        }else {
+          Package<| title == $::puppet::params::passenger_package |> {
+            notify +> Service['httpd'],
+          }
         }
-      }
-      else {
-        Package<| title == $::puppet::params::rails_package |> {
-          before +> File['/etc/puppet/rack'],
-        }
-      }
 
-      if ! defined(Package[$::puppet::params::rack_package]) {
-        package{"$::puppet::params::rack_package":
-          ensure => 'present',
-          before => File['/etc/puppet/rack'],
+        if ! defined(Package[$::puppet::params::rails_package]) {
+          package{$::puppet::params::rails_package:
+            ensure => 'present',
+            before => File['/etc/puppet/rack'],
+          }
         }
-      }
-      else {
-        Package<| title == $::puppet::params::rack_package |> {
-          before +> File['/etc/puppet/rack'],
+        else {
+          Package<| title == $::puppet::params::rails_package |> {
+            before +> File['/etc/puppet/rack'],
+          }
         }
-      }
-      
-      a2mod {'passenger':
-        ensure  => 'present',
-        require => Package["$::puppet::params::passenger_package"]
-      }
 
-     }
-     defualt: {err('Passenger module only supports ubuntu')}
+        if ! defined(Package[$::puppet::params::rack_package]) {
+          package{$::puppet::params::rack_package:
+            ensure => 'present',
+            before => File['/etc/puppet/rack'],
+          }
+        }
+        else {
+          Package<| title == $::puppet::params::rack_package |> {
+            before +> File['/etc/puppet/rack'],
+          }
+        }
+
+        a2mod {'passenger':
+          ensure  => 'present',
+          require => Package[$::puppet::params::passenger_package],
+        }
+
+      }
+      default: {
+        err('The Puppet passenger module does not support your os')
+      }
     }
 
 

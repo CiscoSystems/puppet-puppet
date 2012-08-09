@@ -50,7 +50,7 @@ class puppet::master (
     user { $::puppet::params::puppet_user:
       ensure => present,
       uid    => $user_id,
-      gid    => $puppet_group,
+      gid    => $::puppet::params::puppet_group,
     }
   }
 
@@ -96,8 +96,8 @@ class puppet::master (
   if ! defined(Concat[$::puppet::params::puppet_conf]) {
     concat { $::puppet::params::puppet_conf:
       mode    => '0644',
-      owner   => $puppet_user,
-      group   => $puppet_group,
+      owner   => $::puppet::params::puppet_user,
+      group   => $::puppet::params::puppet_group,
       notify  => Service['httpd'],
     }
   }
@@ -119,22 +119,22 @@ class puppet::master (
     file { $::puppet::params::confdir:
       ensure  => directory,
       require => Package[$puppet_master_package],
-      owner   => $puppet_user,
-      group   => $puppet_group,
+      owner   => $::puppet::params::puppet_user,
+      group   => $::puppet::params::puppet_group,
       notify  => Service['httpd'],
     }
   }
   else {
     File<| title == $::puppet::params::confdir |> {
-      notify  +> $service_notify,
+      notify  +> Service['httpd'],
       require +> Package[$puppet_master_package],
     }
   }
 
   file { $puppet_vardir:
     ensure       => directory,
-    owner        => $puppet_user,
-    group        => $puppet_group,
+    owner        => $::puppet::params::puppet_user,
+    group        => $::puppet::params::puppet_group,
     notify       => Service['httpd'],
     require      => Package[$puppet_master_package]
   }

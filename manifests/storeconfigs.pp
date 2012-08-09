@@ -6,7 +6,7 @@ class puppet::storeconfigs(
     $puppet_conf = '/etc/puppet/puppet.comf',
 )
 {
-  package { "puppetdb-terminus":
+  package { 'puppetdb-terminus':
     ensure  => present,
   }
 
@@ -20,7 +20,7 @@ class puppet::storeconfigs(
     require     => Package['puppetdb-terminus'],
   }
 
-  # TODO: Add port support 
+  # TODO: Add port support
   file { "$puppet_confdir/puppetdb.conf":
     ensure      => file,
     content     => template('puppet/puppetdb.conf.erb'),
@@ -30,7 +30,7 @@ class puppet::storeconfigs(
   concat::fragment { 'puppet.conf-master-storeconfig':
     order   => '03',
     target  => $puppet_conf,
-    content => template("puppet/puppet.conf-master-storeconfigs.erb"),
+    content => template('puppet/puppet.conf-master-storeconfigs.erb'),
     notify  => $puppet_service,
   }
 }
