@@ -13,7 +13,6 @@ This is currently going under a massive refactor
 class { 'puppet::master':
      autosign                  => true,
      storeconfigs              => true,
-     storeconfigs_dbadapter    => 'puppetdb',
      storeconfigs_dbserver     => master.puppetlabs.vm,
 }
 ```
