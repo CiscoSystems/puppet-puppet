@@ -58,7 +58,10 @@ describe 'puppet::master', :type => :class do
                 :owner   => 'puppet',
                 :group   => 'puppet',
                 :notify  => "Service[httpd]"
-
+            )
+            should contain_concat__fragment('puppet.conf-common').with(
+                :order      => '00',
+                :target     => '/etc/puppet/puppet.conf'
             )
             should contain_file('/etc/puppet').with(
                 :require => "Package[#{params[:puppet_master_package]}]",

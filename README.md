@@ -21,7 +21,7 @@ class { 'puppet::master':
 ```ruby
  class { 'puppet::agent':
  	puppet_server             => master.puppetlabs.vm,
- 	environment				  => production,
+ 	environment               => production,
  	splay                     => true,
  }
  ```

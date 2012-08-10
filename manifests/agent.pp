@@ -11,84 +11,65 @@
 # Sample Usage:
 #
 class puppet::agent(
-  $puppet_group           = $::puppet::params::puppet_group,
   $puppet_server          = $::puppet::params::puppet_server,
-  $puppet_user            = $::puppet::params::puppet_user,
   $puppet_agent_service   = $::puppet::params::puppet_agent_service,
-  $puppet_agent_name      = $::puppet::params::puppet_agent_name,
-  $puppet_conf            = $::puppet::params::puppet_conf,
-  $package_provider       = undef,
+  $puppet_agent_package   = $::puppet::params::puppet_agent_package,
   $version                = 'present',
-  $puppet_agent_enabled   = true,
   $puppet_run_style       = 'service',
   $puppet_run_interval    = 30,
   $user_id                = undef,
   $group_id               = undef,
-  $splay                  = 'UNSET',
-  $environment            = "production"
+  $splay                  = 'false',
+  $environment            = 'production'
 ) inherits puppet::params {
 
   include concat::setup
 
-  if ! defined(User[$puppet_user]) {
+  if ! defined(User[$::puppet::params::puppet_user]) {
     user { $puppet_user:
       ensure => present,
       uid    => $user_id,
-      gid    => $puppet_group,
+      gid    => $::puppet::params::puppet_group,
     }
   }
 
-  if ! defined(Group[$puppet_group]) {
+  if ! defined(Group[$::puppet::params::puppet_group]) {
     group { $puppet_group:
       ensure => present,
       gid    => $group_id,
     }
   }
-
+  package { $puppet_agent_package:
+    ensure   => $version,
+  }
+  
   if $::kernel == 'Linux' {
     file { $puppet::params::puppet_defaults:
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
       content => template("puppet/${puppet::params::puppet_defaults}.erb"),
+      require => Package[$puppet_agent_package],
     }
-  }
-
-  package { $puppet_agent_name:
-    ensure   => $version,
-    provider => $package_provider,
   }
 
   case $puppet_run_style {
     'service': {
-      if $package_provider == 'gem' {
-        $service_notify = Exec['puppet_agent_start']
-
-        exec { 'puppet_agent_start':
-          command   => '/usr/bin/nohup puppet agent &',
-          refresh   => '/usr/bin/pkill puppet && /usr/bin/nohup puppet agent &',
-          unless    => '/bin/ps -ef | grep -v grep | /bin/grep \'puppet agent\'',
-          require   => File[$puppet_conf],
-          subscribe => Package[$puppet_agent_name],
-        }
-        } else {
           $service_notify = Service[$puppet_agent_service]
-
+          $runinterval = $puppet_run_interval * 60
           service { $puppet_agent_service:
-            ensure    => $puppet_agent_enabled,
-            enable    => $puppet_agent_enabled,
-            hasstatus => true,
-            require   => File[$puppet_conf],
-            subscribe => Package[$puppet_agent_name],
-            #before   => Service['httpd'];
+            ensure    => true,
+            enable    => true,
+            require   => File [$::puppet::params::puppet_conf],
+            subscribe => Package[$puppet_agent_package],
             }
-        }
         if ! defined(File[$::puppet::params::confdir]) {
           file { $::puppet::params::confdir:
-            require => Package[$puppet_agent_name],
-            owner   => $puppet_user,
-            group   => $puppet_group,
-            notify  => $puppet::agent::service_notify,
+            ensure  => directory,
+            require => Package[$puppet_agent_package],
+            owner   => $::puppet::params::puppet_user,
+            group   => $::puppet::params::puppet_group,
+            notify  => Service[$puppet_agent_service],
           }
         }
     }
@@ -99,7 +80,7 @@ class puppet::agent(
         enable      => false,
         hasrestart  => true,
         hasstatus   => true,
-        require     => Package[$puppet_agent_name],
+        require     => Package[$puppet_agent_package],
       }
 
       # Run puppet as a cron - this saves memory and avoids the whole problem
@@ -121,32 +102,34 @@ class puppet::agent(
     }
   }
 
-  if ! defined(Concat[$puppet_conf]) {
+  if ! defined(Concat[$::puppet::params::puppet_conf]) {
     concat { $puppet_conf:
       mode    => '0644',
-      require => Package['puppet'],
-      owner   => $puppet_user,
-      group   => $puppet_group,
+      require => Package[$puppet_agent_package],
+      owner   => $::puppet::params::puppet_user,
+      group   => $::puppet::params::puppet_group,
       notify  => $service_notify,
     }
   }
   else {
-    Concat<| title == $puppet_conf |> {
-      notify  +> $service_notify,
+    if $puppet_run_style == 'service' {
+      Concat<| title == $::puppet::params::puppet_conf |> {
+        notify  +> $service_notify,
+      }
     }
   }
 
   if ! defined(Concat::Fragment['puppet.conf-common']) {
     concat::fragment { 'puppet.conf-common':
       order   => '00',
-      target  => $puppet_conf,
+      target  => $::puppet::params::puppet_conf,
       content => template('puppet/puppet.conf-common.erb'),
     }
   }
 
   concat::fragment { 'puppet.conf-agent':
   order   => '01',
-  target  => $puppet_conf,
+  target  => $::puppet::params::puppet_conf,
   content => template('puppet/puppet.conf-agent.erb'),
   notify  =>  $service_notify,
   }
