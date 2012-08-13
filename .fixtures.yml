@@ -1,7 +1,8 @@
 fixtures:
     repositories:
-        "stdlib": "git://github.com/puppetlabs/puppetlabs-stdlib.git"
-        'concat': "git://github.com/ripienaar/puppet-concat.git"
-        'apache': "git://github.com/puppetlabs/puppetlabs-apache.git"
+        "stdlib":  "git://github.com/puppetlabs/puppetlabs-stdlib.git"
+        'concat':  "git://github.com/ripienaar/puppet-concat.git"
+        'apache':  "git://github.com/puppetlabs/puppetlabs-apache.git"
+        'inifile':  "git://github.com/cprice-puppet/puppetlabs-inifile.git"
     symlinks:
         "puppet": "#{source_dir}"

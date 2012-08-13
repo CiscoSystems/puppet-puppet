@@ -19,11 +19,11 @@ describe 'puppet::agent', :type => :class do
                 :version                => '/etc/puppet/manifests/site.pp',
                 :puppet_run_style       => 'service',
                 :splay                  => 'true',  
-                :environment            => 'production'
+                :environment            => 'production',
+                :puppet_run_interval    => 30,
             }
         end
         it {
-            should include_class('concat::setup')
             should contain_user('puppet').with(
                 :ensure => 'present',
                 :uid    => nil,
@@ -48,8 +48,8 @@ describe 'puppet::agent', :type => :class do
                 :enable  => true,
                 :require => 'File[/etc/puppet/puppet.conf]'
             )
-            should contain_file('/etc/puppet').with(
-                :ensure  => 'directory',
+            should contain_file('/etc/puppet/puppet.conf').with(
+                :ensure  => 'file',
                 :require => "Package[#{params[:puppet_agent_package]}]",
                 :owner   => 'puppet',
                 :group   => 'puppet',
@@ -57,22 +57,40 @@ describe 'puppet::agent', :type => :class do
             )
             should contain_file('/etc/puppet').with(
                 :require => "Package[#{params[:puppet_agent_package]}]",
-                :ensure => 'directory',
-                :owner  => 'puppet',
-                :group  => 'puppet',
+                :ensure  => 'directory',
+                :owner   => 'puppet',
+                :group   => 'puppet',
                 :notify  => "Service[#{params[:puppet_agent_service]}]"
             )
-            should contain_concat__fragment('puppet.conf-common').with(
-                :order      => '00',
-                :target     => '/etc/puppet/puppet.conf'
+            should contain_ini_setting('puppetagentmaster').with(
+                :ensure  => 'present',
+                :section => 'agent',
+                :setting => 'master',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => params[:puppet_server]
             )
-            should contain_concat__fragment('puppet.conf-agent').with(
-                :order      => '01',
-                :target     => '/etc/puppet/puppet.conf',
-                :content    => /server\s*= #{params[:puppet_server]}/,
-                :content    => /splay\s*= #{params[:splay]}/
+            should contain_ini_setting('puppetagentenvironment').with(
+                :ensure  => 'present',
+                :section => 'agent',
+                :setting => 'environment',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => params[:environment]
             )
-
+            should contain_ini_setting('puppetagentruninterval').with(
+                :ensure  => 'present',
+                :section => 'agent',
+                :setting => 'runinterval',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => params[:puppet_run_interval] * 60
+            )
+            should contain_ini_setting('puppetagentsplay').with(
+                :ensure  => 'present',
+                :section => 'agent',
+                :setting => 'splay',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => params[:splay]
+            )
+            
         }
     end
 end

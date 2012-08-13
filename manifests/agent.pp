@@ -23,8 +23,6 @@ class puppet::agent(
   $environment            = 'production'
 ) inherits puppet::params {
 
-  include concat::setup
-
   if ! defined(User[$::puppet::params::puppet_user]) {
     user { $puppet_user:
       ensure => present,
@@ -52,26 +50,26 @@ class puppet::agent(
       require => Package[$puppet_agent_package],
     }
   }
+  
+  if ! defined(File[$::puppet::params::confdir]) {
+    file { $::puppet::params::confdir:
+      ensure  => directory,
+      require => Package[$puppet_agent_package],
+      owner   => $::puppet::params::puppet_user,
+      group   => $::puppet::params::puppet_group,
+      notify  => Service[$puppet_agent_service],
+    }
+  }
 
   case $puppet_run_style {
     'service': {
           $service_notify = Service[$puppet_agent_service]
-          $runinterval = $puppet_run_interval * 60
           service { $puppet_agent_service:
             ensure    => true,
             enable    => true,
             require   => File [$::puppet::params::puppet_conf],
             subscribe => Package[$puppet_agent_package],
             }
-        if ! defined(File[$::puppet::params::confdir]) {
-          file { $::puppet::params::confdir:
-            ensure  => directory,
-            require => Package[$puppet_agent_package],
-            owner   => $::puppet::params::puppet_user,
-            group   => $::puppet::params::puppet_group,
-            notify  => Service[$puppet_agent_service],
-          }
-        }
     }
     'cron': {
       # ensure that puppet is not running and will start up on boot
@@ -101,37 +99,61 @@ class puppet::agent(
       err 'Unsupported puppet run style in Class[\'puppet::agent\']'
     }
   }
-
-  if ! defined(Concat[$::puppet::params::puppet_conf]) {
-    concat { $puppet_conf:
-      mode    => '0644',
-      require => Package[$puppet_agent_package],
-      owner   => $::puppet::params::puppet_user,
-      group   => $::puppet::params::puppet_group,
-      notify  => $service_notify,
-    }
-  }
-  else {
-    if $puppet_run_style == 'service' {
-      Concat<| title == $::puppet::params::puppet_conf |> {
-        notify  +> $service_notify,
+  
+  if ! defined(File[$::puppet::params::puppet_conf]) {
+      file { $::puppet::params::puppet_conf:
+        ensure  => 'file',
+        mode    => '0644',
+        require => Package[$puppet_agent_package],
+        owner   => $::puppet::params::puppet_user,
+        group   => $::puppet::params::puppet_group,
+        notify  => $service_notify,
       }
     }
-  }
-
-  if ! defined(Concat::Fragment['puppet.conf-common']) {
-    concat::fragment { 'puppet.conf-common':
-      order   => '00',
-      target  => $::puppet::params::puppet_conf,
-      content => template('puppet/puppet.conf-common.erb'),
+    else {
+      if $puppet_run_style == 'service' {
+        File<| title == $::puppet::params::puppet_conf |> {
+          notify  +> $service_notify,
+        }
+      }
     }
-  }
+	
+	#run interval in seconds
+	$runinterval = $puppet_run_interval * 60
+	
+    ini_setting {'puppetagentmaster':
+      ensure  => present,
+      section => 'agent',
+      setting => 'master',
+      path    => $::puppet::params::puppet_conf,
+      value   => $puppet_server,
+      require => File[$::puppet::params::puppet_conf],
+    }
+    
+    ini_setting {'puppetagentenvironment':
+      ensure  => present,
+      section => 'agent',
+      setting => 'environment',
+      path    => $::puppet::params::puppet_conf,
+      value   => $environment,
+      require => File[$::puppet::params::puppet_conf],
+    }
+	
+    ini_setting {'puppetagentruninterval':
+      ensure  => present,
+      section => 'agent',
+      setting => 'runinterval',
+      path    => $::puppet::params::puppet_conf,
+      value   => $runinterval,
+      require => File[$::puppet::params::puppet_conf],
+    }
 
-  concat::fragment { 'puppet.conf-agent':
-  order   => '01',
-  target  => $::puppet::params::puppet_conf,
-  content => template('puppet/puppet.conf-agent.erb'),
-  notify  =>  $service_notify,
-  }
-
+    ini_setting {'puppetagentsplay':
+      ensure  => present,
+      section => 'agent',
+      setting => 'splay',
+      path    => $::puppet::params::puppet_conf,
+      value   => $splay,
+      require => File[$::puppet::params::puppet_conf],
+    }
 }
