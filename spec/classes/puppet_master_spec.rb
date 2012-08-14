@@ -7,7 +7,6 @@ describe 'puppet::master', :type => :class do
             { 
                 :osfamily        => 'Debian',
                 :operatingsystem => 'Debian',
-                :concat_basedir  => '/var/lib/puppet/concat',
             }
         end
         let (:params) do
@@ -25,7 +24,6 @@ describe 'puppet::master', :type => :class do
             }
         end
         it {
-            should include_class('concat::setup')
             should contain_user('puppet').with(
                 :ensure => 'present',
                 :uid    => nil,
@@ -44,24 +42,12 @@ describe 'puppet::master', :type => :class do
                 :require   => 'File[/etc/puppet/puppet.conf]',
                 :subscribe => "Package[#{params[:puppet_master_package]}]"
             )
-            should contain_concat__fragment('puppet.conf-master').with(
-                :order      => '02',
-                :target     => '/etc/puppet/puppet.conf',
-                :notify     => "Service[httpd]",
-                :content    => /modulepath\s*= #{params[:modulepath]}/,
-                :content    => /manifest\s*= #{params[:manifest]}/,
-                :content    => /autosign\s*= #{params[:autosign]}/,
-                :content    => /certname\s*= #{params[:certname]}/
-            )
-            should contain_concat('/etc/puppet/puppet.conf').with(
-                :mode    => '0644',
+            should contain_file('/etc/puppet/puppet.conf').with(
+                :ensure  => 'file',
+                :require => 'File[/etc/puppet]',
                 :owner   => 'puppet',
                 :group   => 'puppet',
-                :notify  => "Service[httpd]"
-            )
-            should contain_concat__fragment('puppet.conf-common').with(
-                :order      => '00',
-                :target     => '/etc/puppet/puppet.conf'
+                :notify  => 'Service[httpd]'
             )
             should contain_file('/etc/puppet').with(
                 :require => "Package[#{params[:puppet_master_package]}]",

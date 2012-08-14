@@ -104,7 +104,7 @@ class puppet::agent(
       file { $::puppet::params::puppet_conf:
         ensure  => 'file',
         mode    => '0644',
-        require => Package[$puppet_agent_package],
+        require => File[$::puppet::params::confdir],
         owner   => $::puppet::params::puppet_user,
         group   => $::puppet::params::puppet_group,
         notify  => $service_notify,
@@ -121,39 +121,39 @@ class puppet::agent(
 	#run interval in seconds
 	$runinterval = $puppet_run_interval * 60
 	
-    ini_setting {'puppetagentmaster':
-      ensure  => present,
-      section => 'agent',
-      setting => 'master',
-      path    => $::puppet::params::puppet_conf,
-      value   => $puppet_server,
-      require => File[$::puppet::params::puppet_conf],
-    }
-    
-    ini_setting {'puppetagentenvironment':
-      ensure  => present,
-      section => 'agent',
-      setting => 'environment',
-      path    => $::puppet::params::puppet_conf,
-      value   => $environment,
-      require => File[$::puppet::params::puppet_conf],
-    }
-	
-    ini_setting {'puppetagentruninterval':
-      ensure  => present,
-      section => 'agent',
-      setting => 'runinterval',
-      path    => $::puppet::params::puppet_conf,
-      value   => $runinterval,
-      require => File[$::puppet::params::puppet_conf],
-    }
+  ini_setting {'puppetagentmaster':
+    ensure  => present,
+    section => 'agent',
+    setting => 'server',
+    path    => $::puppet::params::puppet_conf,
+    value   => $puppet_server,
+    require => File[$::puppet::params::puppet_conf],
+  }
+  
+  ini_setting {'puppetagentenvironment':
+    ensure  => present,
+    section => 'agent',
+    setting => 'environment',
+    path    => $::puppet::params::puppet_conf,
+    value   => $environment,
+    require => File[$::puppet::params::puppet_conf],
+  }
 
-    ini_setting {'puppetagentsplay':
-      ensure  => present,
-      section => 'agent',
-      setting => 'splay',
-      path    => $::puppet::params::puppet_conf,
-      value   => $splay,
-      require => File[$::puppet::params::puppet_conf],
-    }
+  ini_setting {'puppetagentruninterval':
+    ensure  => present,
+    section => 'agent',
+    setting => 'runinterval',
+    path    => $::puppet::params::puppet_conf,
+    value   => $runinterval,
+    require => File[$::puppet::params::puppet_conf],
+  }
+
+  ini_setting {'puppetagentsplay':
+    ensure  => present,
+    section => 'agent',
+    setting => 'splay',
+    path    => $::puppet::params::puppet_conf,
+    value   => $splay,
+    require => File[$::puppet::params::puppet_conf],
+  }
 }

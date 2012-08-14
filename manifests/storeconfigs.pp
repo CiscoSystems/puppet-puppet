@@ -3,7 +3,7 @@ class puppet::storeconfigs(
     $dbport,
     $puppet_service,
     $puppet_confdir = '/etc/puppet/',
-    $puppet_conf = '/etc/puppet/puppet.comf',
+    $puppet_conf = '/etc/puppet/puppet.conf',
 )
 {
   package { 'puppetdb-terminus':
@@ -27,10 +27,31 @@ class puppet::storeconfigs(
     require     => File["$puppet_confdir/routes.yaml"],
     notify      => $puppet_service,
   }
-  concat::fragment { 'puppet.conf-master-storeconfig':
-    order   => '03',
-    target  => $puppet_conf,
-    content => template('puppet/puppet.conf-master-storeconfigs.erb'),
-    notify  => $puppet_service,
+
+  ini_setting {'puppetmasterstoreconfigserver':
+    ensure  => present,
+    section => 'master',
+    setting => 'server',
+    path    => $puppet_conf,
+    value   => $dbserver,
+    require => File[$puppet_conf],
+  }
+
+  ini_setting {'puppetmasterstoreconfig':
+    ensure  => present,
+    section => 'master',
+    setting => 'storeconfigs',
+    path    => $puppet_conf,
+    value   => 'true',
+    require => File[$puppet_conf],
+  }
+
+  ini_setting {'puppetmasterstorebackend':
+    ensure  => present,
+    section => 'master',
+    setting => 'storeconfigs_backend',
+    path    => $puppet_conf,
+    value   => 'puppetdb',
+    require => File[$puppet_conf],
   }
 }

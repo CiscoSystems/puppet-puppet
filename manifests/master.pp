@@ -6,9 +6,8 @@
 #
 # Requires:
 #
-#  Class['concat']
+#  Class['inifile']
 #  Class['stdlib']
-#  Class['concat::setup']
 #
 # Sample Usage:
 #
@@ -28,12 +27,13 @@ class puppet::master (
   $group_id                 = undef,
   $modulepath               = $::puppet::params::modulepath,
   $manifest                 = $::puppet::params::manifest,
+  $report                   = true,
   $storeconfigs             = false,
   $storeconfigs_dbserver   =  $::puppet::params::storeconfigs_dbserver,
   $storeconfigs_dbport      = $::puppet::params::storeconfigs_dbport,
   $certname                 = $::fqdn,
   $autosign                 = false,
-  $dashboard_port           = 'UNSET',
+  $reporturl                = 'UNSET',
   $puppet_site              = $::puppet::params::puppet_site,
   $puppet_ssldir            = $::puppet::params::puppet_ssldir,
   $puppet_docroot           = $::puppet::params::puppet_docroot,
@@ -44,7 +44,6 @@ class puppet::master (
   $version                  = 'present',
   $apache_serveradmin       = $::puppet::params::apache_serveradmin
 ) inherits puppet::params {
-  include concat::setup
 
   if ! defined(User[$::puppet::params::puppet_user]) {
     user { $::puppet::params::puppet_user:
@@ -84,34 +83,21 @@ class puppet::master (
     subscribe => Package[$puppet_master_package],
   }
 
-  Concat::Fragment['puppet.conf-master'] -> Service['httpd']
-
-  concat::fragment { 'puppet.conf-master':
-    order   => '02',
-    target  => $::puppet::params::puppet_conf,
-    content => template('puppet/puppet.conf-master.erb'),
-    notify  => Service['httpd'],
-  }
-
-  if ! defined(Concat[$::puppet::params::puppet_conf]) {
-    concat { $::puppet::params::puppet_conf:
+ if ! defined(File[$::puppet::params::puppet_conf]) {
+    file { $::puppet::params::puppet_conf:
+      ensure  => 'file',
       mode    => '0644',
+      require => File[$::puppet::params::confdir],
       owner   => $::puppet::params::puppet_user,
       group   => $::puppet::params::puppet_group,
       notify  => Service['httpd'],
     }
   }
   else {
-    Concat<| title == $::puppet::params::puppet_conf |> {
-      notify  +> Service['httpd'],
-    }
-  }
-
-  if ! defined(Concat::Fragment['puppet.conf-common']) {
-    concat::fragment { 'puppet.conf-common':
-      order   => '00',
-      target  => $::puppet::params::puppet_conf,
-      content => template('puppet/puppet.conf-common.erb'),
+    if $puppet_run_style == 'service' {
+      File<| title == $::puppet::params::puppet_conf |> {
+         notify  => Service['httpd'],
+      }
     }
   }
 
@@ -146,6 +132,62 @@ class puppet::master (
       puppet_service  => Service['httpd'],
       puppet_confdir  => $::puppet::params::puppet_confdir,
       puppet_conf     => $::puppet::params::puppet_conf,
+    }
+  }
+  
+  ini_setting {'puppetmastermodulepath':
+    ensure  => present,
+    section => 'master',
+    setting => 'modulepath',
+    path    => $::puppet::params::puppet_conf,
+    value   => $modulepath,
+    require => File[$::puppet::params::puppet_conf],
+  }
+  
+  ini_setting {'puppetmastermanifest':
+    ensure  => present,
+    section => 'master',
+    setting => 'manifest',
+    path    => $::puppet::params::puppet_conf,
+    value   => $manifest,
+    require => File[$::puppet::params::puppet_conf],
+  }
+
+  ini_setting {'puppetmasterautosign':
+    ensure  => present,
+    section => 'master',
+    setting => 'autosign',
+    path    => $::puppet::params::puppet_conf,
+    value   => $autosign,
+    require => File[$::puppet::params::puppet_conf],
+  }
+
+  ini_setting {'puppetmastercertname':
+    ensure  => present,
+    section => 'master',
+    setting => 'certname',
+    path    => $::puppet::params::puppet_conf,
+    value   => $certname,
+    require => File[$::puppet::params::puppet_conf],
+  }
+
+  ini_setting {'puppetmasterreport':
+    ensure  => present,
+    section => 'master',
+    setting => 'report',
+    path    => $::puppet::params::puppet_conf,
+    value   => $report,
+    require => File[$::puppet::params::puppet_conf],
+  }
+
+  if $reporturl != 'UNSET'{
+    ini_setting {'puppetmasterreport':
+      ensure  => present,
+      section => 'master',
+      setting => 'reporturl',
+      path    => $::puppet::params::puppet_conf,
+      value   => $reporturl,
+      require => File[$::puppet::params::puppet_conf],
     }
   }
 }

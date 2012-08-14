@@ -19,7 +19,6 @@ describe 'puppet::passenger', :type => :class do
             { 
                 :osfamily        => 'Debian',
                 :operatingsystem => 'Debian',
-                :concat_basedir  => '/var/lib/puppet/concat',
             }
         end
          it {
@@ -50,6 +49,22 @@ describe 'puppet::passenger', :type => :class do
                     :owner  => 'puppet',
                     :group  => 'puppet',
                     :mode   => '0644'
+                )
+                should contain_ini_setting('puppetmastersslclient').with(
+                    :ensure  => 'present',
+                    :section => 'master',
+                    :setting => 'ssl_client_header',
+                    :path    => params[:puppet_conf],
+                    :value   =>'SSL_CLIENT_S_DN',
+                    :require => "File[#{params[:puppet_conf]}]"
+                )
+                should contain_ini_setting('puppetmastersslclientverify').with(
+                    :ensure  => 'present',
+                    :section => 'master',
+                    :setting => 'ssl_client_verify_header',
+                    :path    => params[:puppet_conf],
+                    :value   =>'SSL_CLIENT_VERIFY',
+                    :require => "File[#{params[:puppet_conf]}]"
                 )
         }
     end

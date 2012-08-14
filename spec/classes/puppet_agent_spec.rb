@@ -7,7 +7,6 @@ describe 'puppet::agent', :type => :class do
             { 
                 :osfamily        => 'Debian',
                 :operatingsystem => 'Debian',
-                :concat_basedir  => '/var/lib/puppet/concat',
                 :kernel          => 'Linux'
             }
         end
@@ -50,7 +49,7 @@ describe 'puppet::agent', :type => :class do
             )
             should contain_file('/etc/puppet/puppet.conf').with(
                 :ensure  => 'file',
-                :require => "Package[#{params[:puppet_agent_package]}]",
+                :require => 'File[/etc/puppet]',
                 :owner   => 'puppet',
                 :group   => 'puppet',
                 :notify  => "Service[#{params[:puppet_agent_service]}]"
@@ -65,7 +64,7 @@ describe 'puppet::agent', :type => :class do
             should contain_ini_setting('puppetagentmaster').with(
                 :ensure  => 'present',
                 :section => 'agent',
-                :setting => 'master',
+                :setting => 'server',
                 :path    => '/etc/puppet/puppet.conf',
                 :value   => params[:puppet_server]
             )
