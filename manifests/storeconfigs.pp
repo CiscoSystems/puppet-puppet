@@ -23,7 +23,6 @@ class puppet::storeconfigs(
   # TODO: Add port support
   file { "$puppet_confdir/puppetdb.conf":
     ensure      => file,
-    content     => template('puppet/puppetdb.conf.erb'),
     require     => File["$puppet_confdir/routes.yaml"],
     notify      => $puppet_service,
   }
