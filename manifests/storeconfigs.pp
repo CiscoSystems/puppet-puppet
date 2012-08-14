@@ -19,8 +19,7 @@ class puppet::storeconfigs(
     notify      => $puppet_service,
     require     => Package['puppetdb-terminus'],
   }
-
-  # TODO: Add port support
+  
   file { "$puppet_confdir/puppetdb.conf":
     ensure      => file,
     require     => File["$puppet_confdir/routes.yaml"],
