@@ -1,1 +1,1 @@
-include puppet::master
+class{'puppet::agent'} 

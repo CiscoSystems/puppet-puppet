@@ -5,6 +5,11 @@ This module is a configuration manager module that ensures the configuration of 
 ## NOTE ##
 This is currently going under a massive refactor 
 
+## Requirements ##
+stdlib:  "git://github.com/puppetlabs/puppetlabs-stdlib.git"
+apache:  "git://github.com/puppetlabs/puppetlabs-apache.git"
+inifile: "git://github.com/cprice-puppet/puppetlabs-inifile.git"
+
 ## Quick Start
 
 ### For a puppet master ###
