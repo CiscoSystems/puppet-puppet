@@ -6,24 +6,11 @@ class puppet::storeconfigs(
     $puppet_conf = '/etc/puppet/puppet.conf',
 )
 {
-  package { 'puppetdb-terminus':
-    ensure  => present,
-  }
-
-  # TODO: this will overwrite any existing routes.yaml;
-  #  to handle this properly we should just be ensuring
-  #  that the proper lines exist
-  file { "$puppet_confdir/routes.yaml":
-    ensure      => file,
-    source      => 'puppet:///modules/puppet/routes.yaml',
-    notify      => $puppet_service,
-    require     => Package['puppetdb-terminus'],
-  }
-  
-  file { "$puppet_confdir/puppetdb.conf":
-    ensure      => file,
-    require     => File["$puppet_confdir/routes.yaml"],
-    notify      => $puppet_service,
+  class{ 'puppet::dbterminus': 
+    puppet_confdir => $puppet_confdir, 
+    puppet_service => $puppet_service,
+    dbport         => $dbport,
+    dbserver       => $dbserver,
   }
 
   ini_setting {'puppetmasterstoreconfigserver':
@@ -32,7 +19,7 @@ class puppet::storeconfigs(
     setting => 'server',
     path    => $puppet_conf,
     value   => $dbserver,
-    require => File[$puppet_conf],
+    require => [File[$puppet_conf],Class[puppet::dbterminus]],
   }
 
   ini_setting {'puppetmasterstoreconfig':
@@ -41,7 +28,7 @@ class puppet::storeconfigs(
     setting => 'storeconfigs',
     path    => $puppet_conf,
     value   => 'true',
-    require => File[$puppet_conf],
+    require => [File[$puppet_conf],Class[puppet::dbterminus]],
   }
 
   ini_setting {'puppetmasterstorebackend':
@@ -50,6 +37,6 @@ class puppet::storeconfigs(
     setting => 'storeconfigs_backend',
     path    => $puppet_conf,
     value   => 'puppetdb',
-    require => File[$puppet_conf],
+    require => [File[$puppet_conf],Class[puppet::dbterminus]],
   }
 }
