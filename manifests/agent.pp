@@ -20,12 +20,12 @@ class puppet::agent(
   $puppet_run_interval    = 30,
   $user_id                = undef,
   $group_id               = undef,
-  $splay                  = 'false',
+  $splay                  = false,
   $environment            = 'production'
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
-    user { $puppet_user:
+    user { $::puppet::params::puppet_user:
       ensure => present,
       uid    => $user_id,
       gid    => $::puppet::params::puppet_group,
@@ -33,7 +33,7 @@ class puppet::agent(
   }
 
   if ! defined(Group[$::puppet::params::puppet_group]) {
-    group { $puppet_group:
+    group { $::puppet::params::puppet_group:
       ensure => present,
       gid    => $group_id,
     }
@@ -41,7 +41,7 @@ class puppet::agent(
   package { $puppet_agent_package:
     ensure   => $version,
   }
-  
+
   if $puppet_run_style == 'service'
   {
     $startonboot = 'yes'
@@ -60,7 +60,7 @@ class puppet::agent(
 
     case $::operatingsystem {
       'centos', 'redhat', 'fedora': {
-         ini_setting {'redhatpuppetserver':
+        ini_setting {'redhatpuppetserver':
           ensure  => present,
           section => '',
           setting => 'PUPPET_SERVER',
@@ -89,7 +89,7 @@ class puppet::agent(
       }
     }
   }
-  
+
   if ! defined(File[$::puppet::params::confdir]) {
     file { $::puppet::params::confdir:
       ensure  => directory,
@@ -138,7 +138,7 @@ class puppet::agent(
       err 'Unsupported puppet run style in Class[\'puppet::agent\']'
     }
   }
-  
+
   if ! defined(File[$::puppet::params::puppet_conf]) {
       file { $::puppet::params::puppet_conf:
         ensure  => 'file',
@@ -156,10 +156,10 @@ class puppet::agent(
         }
       }
     }
-	
-	#run interval in seconds
-	$runinterval = $puppet_run_interval * 60
-	
+
+  #run interval in seconds
+  $runinterval = $puppet_run_interval * 60
+
   ini_setting {'puppetagentmaster':
     ensure  => present,
     section => 'agent',
@@ -168,7 +168,7 @@ class puppet::agent(
     value   => $puppet_server,
     require => File[$::puppet::params::puppet_conf],
   }
-  
+
   ini_setting {'puppetagentenvironment':
     ensure  => present,
     section => 'agent',

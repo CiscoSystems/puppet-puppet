@@ -6,8 +6,8 @@ class puppet::storeconfigs(
     $puppet_conf = '/etc/puppet/puppet.conf',
 )
 {
-  class{ 'puppet::dbterminus': 
-    puppet_confdir => $puppet_confdir, 
+  class{ 'puppet::dbterminus':
+    puppet_confdir => $puppet_confdir,
     puppet_service => $puppet_service,
     dbport         => $dbport,
     dbserver       => $dbserver,
@@ -27,7 +27,7 @@ class puppet::storeconfigs(
     section => 'master',
     setting => 'storeconfigs',
     path    => $puppet_conf,
-    value   => 'true',
+    value   => true,
     require => [File[$puppet_conf],Class[puppet::dbterminus]],
   }
 

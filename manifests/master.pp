@@ -83,7 +83,7 @@ class puppet::master (
     subscribe => Package[$puppet_master_package],
   }
 
- if ! defined(File[$::puppet::params::puppet_conf]) {
+  if ! defined(File[$::puppet::params::puppet_conf]){
     file { $::puppet::params::puppet_conf:
       ensure  => 'file',
       mode    => '0644',
@@ -94,10 +94,8 @@ class puppet::master (
     }
   }
   else {
-    if $puppet_run_style == 'service' {
-      File<| title == $::puppet::params::puppet_conf |> {
-         notify  => Service['httpd'],
-      }
+    File<| title == $::puppet::params::puppet_conf |> {
+      notify  => Service['httpd'],
     }
   }
 
@@ -134,7 +132,7 @@ class puppet::master (
       puppet_conf     => $::puppet::params::puppet_conf,
     }
   }
-  
+
   ini_setting {'puppetmastermodulepath':
     ensure  => present,
     section => 'master',
@@ -143,7 +141,7 @@ class puppet::master (
     value   => $modulepath,
     require => File[$::puppet::params::puppet_conf],
   }
-  
+
   ini_setting {'puppetmastermanifest':
     ensure  => present,
     section => 'master',

@@ -1,6 +1,6 @@
- class puppet::dbterminus($puppet_confdir, $puppet_service, $dbport, $dbserver)
+class puppet::dbterminus($puppet_confdir, $puppet_service, $dbport, $dbserver)
 {
- package { 'puppetdb-terminus':
+  package { 'puppetdb-terminus':
     ensure  => present,
   }
 
@@ -13,7 +13,7 @@
     notify      => $puppet_service,
     require     => Package['puppetdb-terminus'],
   }
-  
+
   file { "$puppet_confdir/puppetdb.conf":
     ensure      => file,
     require     => File["$puppet_confdir/routes.yaml"],
@@ -35,7 +35,6 @@
     setting => 'port',
     path    => "$puppet_confdir/puppetdb.conf",
     value   => $dbport,
-   require => File["$puppet_confdir/puppetdb.conf"],
+    require => File["$puppet_confdir/puppetdb.conf"],
   }
-
 }
