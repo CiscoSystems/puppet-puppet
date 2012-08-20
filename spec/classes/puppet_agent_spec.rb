@@ -20,6 +20,7 @@ describe 'puppet::agent', :type => :class do
                 :splay                  => 'true',  
                 :environment            => 'production',
                 :puppet_run_interval    => 30,
+                :puppet_server_port     => 8140,
             }
         end
         it {
@@ -39,8 +40,14 @@ describe 'puppet::agent', :type => :class do
                 :mode     => '0644',
                 :owner    => 'root',
                 :group    => 'root',
-                :content  => /START=yes/,
                 :require  => "Package[#{params[:puppet_agent_package]}]"
+            )
+            should contain_ini_setting('debianpuppetautostart').with(
+                :ensure  => 'present',
+                :section => '',
+                :setting => 'START',
+                :path    => '/etc/default/puppet',
+                :value   => 'yes'
             )
             should contain_service(params[:puppet_agent_service]).with(
                 :ensure  => true,
@@ -82,12 +89,12 @@ describe 'puppet::agent', :type => :class do
                 :path    => '/etc/puppet/puppet.conf',
                 :value   => params[:puppet_run_interval] * 60
             )
-            should contain_ini_setting('puppetagentsplay').with(
+            should contain_ini_setting('puppetmasterport').with(
                 :ensure  => 'present',
                 :section => 'agent',
-                :setting => 'splay',
+                :setting => 'masterport',
                 :path    => '/etc/puppet/puppet.conf',
-                :value   => params[:splay]
+                :value   => params[:puppet_server_port]
             )
             
         }
