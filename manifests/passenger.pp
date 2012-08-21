@@ -1,3 +1,35 @@
+# Class: puppet::passenger
+#
+# This class installs and configures the puppetdb terminus pacakge
+#
+# Parameters:
+#   ['puppet_passenger_port']    - The config directory of puppet
+#   ['puppet_docroot']           - The service needing to be notified of the change puppetmasterd or httpd
+#   ['apache_serveradmin']       - The port of the puppetdb 
+#   ['puppet_site']              - The dns name of the puppetdb server
+#   ['puppet_conf']              - The puppet config file
+#   ['puppet_ssldir']            - The puppet config file
+#   ['certname']                 - The puppet config file
+#
+# Actions:
+# - Configures apache and passenger for puppet master use. 
+#
+# Requires:
+# - Inifile
+# - Class['puppet::params']
+# - Class['apache']
+#
+# Sample Usage:
+#   class { 'puppet::passenger':
+#           puppet_passenger_port  => 8140,
+#           puppet_docroot         => '/etc/puppet/docroot',
+#           apache_serveradmin     => 'wibble',
+#           puppet_site            => 'puppet.example.com',
+#           puppet_conf            => '/etc/puppet/puppet.conf',
+#           puppet_ssldir          => '/var/lib/puppet/ssl',
+#           certname               => 'puppet.example.com',
+#   }
+#
 class puppet::passenger(
   $puppet_passenger_port,
   $puppet_docroot,

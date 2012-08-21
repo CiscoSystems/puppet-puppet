@@ -3,12 +3,30 @@
 # This class installs and configures the puppet agent
 #
 # Parameters:
+#   ['puppet_server']         - The dns name of the puppet master
+#   ['puppet_server_port']    - The Port the puppet master is running on
+#   ['puppet_agent_service']  - The service the puppet agent runs under
+#   ['puppet_agent_package']  - The name of the package providing the puppet agent
+#   ['version']               - The version of the puppet agent to install
+#   ['puppet_run_style']      - The run style of the agent either cron or service
+#   ['puppet_run_interval']   - The run interval of the puppet agent in minutes, default is 30 minutes
+#   ['user_id']               - The userid of the puppet user 
+#   ['group_id']              - The groupid of the puppet group
+#   ['splay']                 - If splay should be enable defaults to false
+#   ['environment']           - The environment of the puppet agent
 #
 # Actions:
+# - Install and configures the puppet agent
 #
 # Requires:
+# - Inifile
 #
 # Sample Usage:
+#   class { 'puppet::agent':
+#       puppet_server             => master.puppetlabs.vm,
+#       environment               => production,
+#       splay                     => true,
+#   }
 #
 class puppet::agent(
   $puppet_server          = $::puppet::params::puppet_server,

@@ -1,3 +1,27 @@
+# Class: puppet::dbterminus
+#
+# This class installs and configures the puppetdb terminus pacakge
+#
+# Parameters:
+#   ['puppet_confdir']    - The config directory of puppet
+#   ['puppet_service']    - The service needing to be notified of the change puppetmasterd or httpd
+#   ['dbport']            - The port of the puppetdb 
+#   ['dbserver']          - The dns name of the puppetdb server
+#
+# Actions:
+# - Configures the puppetdb terminus package
+#
+# Requires:
+# - Inifile
+#
+# Sample Usage:
+#   class { 'puppet::dbterminus':
+#       puppet_confdir             => '/etc/puppet/'
+#       puppet_service             => Service['httpd'],
+#       dbport                     => 8081,
+#       dbserver                   => 'localhost'
+#   }
+#
 class puppet::dbterminus($puppet_confdir, $puppet_service, $dbport, $dbserver)
 {
   package { 'puppetdb-terminus':

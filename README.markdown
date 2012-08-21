@@ -1,32 +1,19 @@
-# Puppet Module
+# Puppet module #
 
-This module is a configuration manager module that ensures the configuration of puppet agent, master, and dashboard.  
+This module provides classes for managing the puppet agent and puppet master. 
+It will setup passenger and apache on the puppetmaster. Please note this will 
+not setup puppetdb this can be configured using 
 
-## NOTE ##
-This is currently going under a massive refactor 
+## Master ##
 
-## Requirements ##
-stdlib:  "git://github.com/puppetlabs/puppetlabs-stdlib.git"
-apache:  "git://github.com/puppetlabs/puppetlabs-apache.git"
-inifile: "git://github.com/cprice-puppet/puppetlabs-inifile.git"
+	class { 'puppet::master':
+	     storeconfigs              => true,
+	}
 
-## Quick Start
+## Agent ##
 
-### For a puppet master ###
-
-```ruby
-class { 'puppet::master':
-     autosign                  => true,
-     storeconfigs              => true,
-     storeconfigs_dbserver     => master.puppetlabs.vm,
-}
-```
-
-### For a puppet agent ###
-```ruby
- class { 'puppet::agent':
- 	puppet_server             => master.puppetlabs.vm,
- 	environment               => production,
- 	splay                     => true,
- }
- ```
+	class { 'puppet::agent':
+	 	puppet_server             => master.puppetlabs.vm,
+	 	environment               => production,
+	 	splay                     => true,
+	 }
