@@ -2,7 +2,9 @@
 
 This module provides classes for managing the puppet agent and puppet master. 
 It will setup passenger and apache on the puppetmaster. Please note this will 
-not setup puppetdb this can be configured using 
+not setup puppetdb this can be configured using the puppet db module 
+https://github.com/cprice-puppet/puppetlabs-puppetdb. Storedconfigs with puppetdb 
+will only work on puppet versions new than 2.7.12.
 
 ## Master ##
 
