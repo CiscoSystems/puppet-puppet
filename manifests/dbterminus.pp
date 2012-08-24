@@ -5,7 +5,7 @@
 # Parameters:
 #   ['puppet_confdir']    - The config directory of puppet
 #   ['puppet_service']    - The service needing to be notified of the change puppetmasterd or httpd
-#   ['dbport']            - The port of the puppetdb 
+#   ['dbport']            - The port of the puppetdb
 #   ['dbserver']          - The dns name of the puppetdb server
 #
 # Actions:

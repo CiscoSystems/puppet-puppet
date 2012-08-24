@@ -10,7 +10,7 @@
 #   ['version']               - The version of the puppet agent to install
 #   ['puppet_run_style']      - The run style of the agent either cron or service
 #   ['puppet_run_interval']   - The run interval of the puppet agent in minutes, default is 30 minutes
-#   ['user_id']               - The userid of the puppet user 
+#   ['user_id']               - The userid of the puppet user
 #   ['group_id']              - The groupid of the puppet group
 #   ['splay']                 - If splay should be enable defaults to false
 #   ['environment']           - The environment of the puppet agent

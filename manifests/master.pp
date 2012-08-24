@@ -4,23 +4,23 @@
 #
 # Parameters:
 #  ['user_id']                  - The userid of the puppet user
-#  ['group_id']                 - The groupid of the puppet group 
+#  ['group_id']                 - The groupid of the puppet group
 #  ['modulepath']               - Module path to be served by the puppet master
 #  ['manifest']                 - Manifest path
-#  ['report']                   - Turn on puppet reports 
+#  ['report']                   - Turn on puppet reports
 #  ['storeconfigs']             - Use storedcofnigs
 #  ['storeconfigs_dbserver']    - Puppetdb server
-#  ['storeconfigs_dbport']      - Puppetdb port 
+#  ['storeconfigs_dbport']      - Puppetdb port
 #  ['certname']                 - The certname the puppet master should use
 #  ['autosign']                 - Auto sign agent certificates default false
-#  ['reporturl']                - Url to send reports to, if reporting enabled 
+#  ['reporturl']                - Url to send reports to, if reporting enabled
 #  ['puppet_site']              - Puppet site
-#  ['puppet_ssldir']            - Puppet sll directory 
+#  ['puppet_ssldir']            - Puppet sll directory
 #  ['puppet_docroot']           - Doc root to be configured in apache vhost
 #  ['puppet_vardir']            - Vardir used by puppet
 #  ['puppet_passenger_port']    - Port to conifgure passenger on default 8140
 #  ['puppet_master_package']    - Puppet master package
-#  ['puppet_master_service']    - Puppet master service 
+#  ['puppet_master_service']    - Puppet master service
 #  ['version']                  - Version of the puppet master package to install
 #  ['apache_serveradmin']       - Apache server admin
 #

@@ -3,16 +3,16 @@
 # This class installs and configures the puppetdb terminus pacakge
 #
 # Parameters:
-#   ['puppet_passenger_port']    - The config directory of puppet
-#   ['puppet_docroot']           - The service needing to be notified of the change puppetmasterd or httpd
-#   ['apache_serveradmin']       - The port of the puppetdb 
-#   ['puppet_site']              - The dns name of the puppetdb server
-#   ['puppet_conf']              - The puppet config file
-#   ['puppet_ssldir']            - The puppet config file
-#   ['certname']                 - The puppet config file
+#   ['puppet_passenger_port']    - The port for the virtual host
+#   ['puppet_docroot']           - Apache documnet root
+#   ['apache_serveradmin']       - The apache server admin
+#   ['puppet_site']              - The dns name for the puppet vhost
+#   ['puppet_conf']              - The puppet config dir
+#   ['puppet_ssldir']            - The pupet ssl dir
+#   ['certname']                 - The puppet certname
 #
 # Actions:
-# - Configures apache and passenger for puppet master use. 
+# - Configures apache and passenger for puppet master use.
 #
 # Requires:
 # - Inifile
