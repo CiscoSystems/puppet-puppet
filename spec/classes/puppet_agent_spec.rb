@@ -40,14 +40,8 @@ describe 'puppet::agent', :type => :class do
                 :mode     => '0644',
                 :owner    => 'root',
                 :group    => 'root',
+                :content  => /START=yes/,
                 :require  => "Package[#{params[:puppet_agent_package]}]"
-            )
-            should contain_ini_setting('debianpuppetautostart').with(
-                :ensure  => 'present',
-                :section => '',
-                :setting => 'START',
-                :path    => '/etc/default/puppet',
-                :value   => 'yes'
             )
             should contain_service(params[:puppet_agent_service]).with(
                 :ensure  => true,
@@ -132,6 +126,13 @@ describe 'puppet::agent', :type => :class do
             )
             should contain_package(params[:puppet_agent_package]).with(
                 :ensure => params[:version]
+            )
+            should contain_file('/etc/default/puppet').with(
+                :mode     => '0644',
+                :owner    => 'root',
+                :group    => 'root',
+                :content  => /START=no/,
+                :require  => "Package[#{params[:puppet_agent_package]}]"
             )
             should contain_service(params[:puppet_agent_service]).with(
                 :ensure  => 'stopped',

@@ -60,51 +60,20 @@ class puppet::agent(
     ensure   => $version,
   }
 
-  if $puppet_run_style == 'service'
-  {
+  if $puppet_run_style == 'service'{
     $startonboot = 'yes'
   }
   else {
     $startonboot = 'no'
   }
 
-  if $::kernel == 'Linux' and $startonboot == 'yes' {
+  if ($::osfamily == 'Debian') or  ($::osfamily == 'Redhat') {
     file { $puppet::params::puppet_defaults:
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
       require => Package[$puppet_agent_package],
-    }
-
-    case $::operatingsystem {
-      'centos', 'redhat', 'fedora': {
-        ini_setting {'redhatpuppetserver':
-          ensure  => present,
-          section => '',
-          setting => 'PUPPET_SERVER',
-          path    => $puppet::params::puppet_defaults,
-          value   => $puppet_server,
-          require => File[$puppet::params::puppet_defaults],
-        }
-        ini_setting {'redhatpuppetport':
-          ensure  => present,
-          section => '',
-          setting => 'PUPPET_PORT',
-          path    => $puppet::params::puppet_defaults,
-          value   => $puppet_server,
-          require => File[$puppet::params::puppet_defaults],
-        }
-      }
-      'ubuntu', 'debian': {
-        ini_setting {'debianpuppetautostart':
-          ensure  => present,
-          section => '',
-          setting => 'START',
-          path    => $puppet::params::puppet_defaults,
-          value   => $startonboot,
-          require => File[$puppet::params::puppet_defaults],
-        }
-      }
+      content => template("puppet/${puppet::params::puppet_defaults}.erb"),
     }
   }
 
