@@ -1,0 +1,2 @@
+2012-08-28 - Stephen Johnson <stephen@pupppetlabs.com> - 0.0.2
+ * Revert inifile updating sheel scripts as it adds spaces 
