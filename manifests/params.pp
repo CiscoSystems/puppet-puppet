@@ -12,10 +12,7 @@
 #
 class puppet::params {
 
-  $puppet_server = $::puppet_server ? {
-    ''      => 'puppet',
-    default => $::puppet_server
-  }
+  $puppet_server                    = 'puppet'
   $modulepath                       = '/etc/puppet/modules'
   $puppet_logdir                    = '/var/log/puppet'
   $puppet_user                      = 'puppet'
