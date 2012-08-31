@@ -90,7 +90,13 @@ describe 'puppet::agent', :type => :class do
                 :path    => '/etc/puppet/puppet.conf',
                 :value   => params[:puppet_server_port]
             )
-            
+            should contain_ini_setting('puppetagentreport').with(
+                :ensure  => 'present',
+                :section => 'agent',
+                :setting => 'report',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => 'true'
+            )
         }
     end
  context 'on Debian operatingsystems using cron' do
@@ -185,7 +191,13 @@ describe 'puppet::agent', :type => :class do
                 :path    => '/etc/puppet/puppet.conf',
                 :value   => params[:puppet_server_port]
             )
-            
+            should contain_ini_setting('puppetagentreport').with(
+                :ensure  => 'present',
+                :section => 'agent',
+                :setting => 'report',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => 'true'
+            )
         }
     end
 end

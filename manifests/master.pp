@@ -7,7 +7,7 @@
 #  ['group_id']                 - The groupid of the puppet group
 #  ['modulepath']               - Module path to be served by the puppet master
 #  ['manifest']                 - Manifest path
-#  ['report']                   - Turn on puppet reports
+#  ['reports']                  - Turn on puppet reports
 #  ['storeconfigs']             - Use storedcofnigs
 #  ['storeconfigs_dbserver']    - Puppetdb server
 #  ['storeconfigs_dbport']      - Puppetdb port
@@ -48,7 +48,7 @@ class puppet::master (
   $group_id                 = undef,
   $modulepath               = $::puppet::params::modulepath,
   $manifest                 = $::puppet::params::manifest,
-  $report                   = true,
+  $reports                  = store,
   $storeconfigs             = false,
   $storeconfigs_dbserver   =  $::puppet::params::storeconfigs_dbserver,
   $storeconfigs_dbport      = $::puppet::params::storeconfigs_dbport,
@@ -190,12 +190,12 @@ class puppet::master (
     require => File[$::puppet::params::puppet_conf],
   }
 
-  ini_setting {'puppetmasterreport':
+  ini_setting {'puppetmasterreports':
     ensure  => present,
     section => 'master',
-    setting => 'report',
+    setting => 'reports',
     path    => $::puppet::params::puppet_conf,
-    value   => $report,
+    value   => $reports,
     require => File[$::puppet::params::puppet_conf],
   }
 

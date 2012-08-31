@@ -63,6 +63,46 @@ describe 'puppet::master', :type => :class do
                 :notify => 'Service[httpd]'
             )
             should include_class('puppet::storeconfigs')
+            should contain_ini_setting('puppetmastermodulepath').with(
+                :ensure  => 'present',
+                :section => 'master',
+                :setting => 'modulepath',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => params[:modulepath],
+                :require => 'File[/etc/puppet/puppet.conf]'
+            )
+            should contain_ini_setting('puppetmastermanifest').with(
+                :ensure  => 'present',
+                :section => 'master',
+                :setting => 'manifest',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => params[:manifest],
+                :require => 'File[/etc/puppet/puppet.conf]'
+            )
+            should contain_ini_setting('puppetmasterautosign').with(
+                :ensure  => 'present',
+                :section => 'master',
+                :setting => 'autosign',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => params[:autosign],
+                :require => 'File[/etc/puppet/puppet.conf]'
+            )
+            should contain_ini_setting('puppetmastercertname').with(
+                :ensure  => 'present',
+                :section => 'master',
+                :setting => 'certname',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => params[:certname],
+                :require => 'File[/etc/puppet/puppet.conf]'
+            )
+            should contain_ini_setting('puppetmasterreports').with(
+                :ensure  => 'present',
+                :section => 'master',
+                :setting => 'reports',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => 'store',
+                :require => 'File[/etc/puppet/puppet.conf]'
+            )
         }
     end
 end

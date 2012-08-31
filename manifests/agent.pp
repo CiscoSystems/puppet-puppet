@@ -14,6 +14,7 @@
 #   ['group_id']              - The groupid of the puppet group
 #   ['splay']                 - If splay should be enable defaults to false
 #   ['environment']           - The environment of the puppet agent
+#   ['report']                - Whether to return reports
 #
 # Actions:
 # - Install and configures the puppet agent
@@ -39,7 +40,8 @@ class puppet::agent(
   $user_id                = undef,
   $group_id               = undef,
   $splay                  = false,
-  $environment            = 'production'
+  $environment            = 'production',
+  $report                 = 'true'
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -189,6 +191,14 @@ class puppet::agent(
     setting => 'masterport',
     path    => $::puppet::params::puppet_conf,
     value   => $puppet_server_port,
+    require => File[$::puppet::params::puppet_conf],
+  }
+  ini_setting {'puppetagentreport':
+    ensure  => present,
+    section => 'agent',
+    setting => 'report',
+    path    => $::puppet::params::puppet_conf,
+    value   => $report,
     require => File[$::puppet::params::puppet_conf],
   }
 }
