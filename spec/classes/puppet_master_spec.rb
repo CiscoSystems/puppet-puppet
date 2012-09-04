@@ -39,8 +39,7 @@ describe 'puppet::master', :type => :class do
             should contain_service(params[:puppet_master_service]).with(
                 :ensure    => 'stopped',
                 :enable    => 'false',
-                :require   => 'File[/etc/puppet/puppet.conf]',
-                :subscribe => "Package[#{params[:puppet_master_package]}]"
+                :require   => 'File[/etc/puppet/puppet.conf]'
             )
             should contain_file('/etc/puppet/puppet.conf').with(
                 :ensure  => 'file',

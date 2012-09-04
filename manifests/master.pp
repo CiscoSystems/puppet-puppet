@@ -101,7 +101,6 @@ class puppet::master (
     ensure    => stopped,
     enable    => false,
     require   => File[$::puppet::params::puppet_conf],
-    subscribe => Package[$puppet_master_package],
   }
 
   if ! defined(File[$::puppet::params::puppet_conf]){
