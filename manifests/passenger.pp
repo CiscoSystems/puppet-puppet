@@ -101,8 +101,8 @@ class puppet::passenger(
 
   file { $puppet_docroot:
     ensure => directory,
-    owner  => 'puppet',
-    group  => 'puppet',
+    owner  => $::puppet::params::puppet_user,
+    group  => $::puppet::params::puppet_group,
     mode   => '0755',
   }
 
@@ -120,15 +120,15 @@ class puppet::passenger(
 
   file { '/etc/puppet/rack':
     ensure => directory,
-    owner  => 'puppet',
-    group  => 'puppet',
+    owner  => $::puppet::params::puppet_user,
+    group  => $::puppet::params::puppet_group,
     mode   => '0755',
   }
 
   file { '/etc/puppet/rack/config.ru':
     ensure => present,
-    owner  => 'puppet',
-    group  => 'puppet',
+    owner  => $::puppet::params::puppet_user,
+    group  => $::puppet::params::puppet_group,
     source => 'puppet:///modules/puppet/config.ru',
     mode   => '0644',
   }
