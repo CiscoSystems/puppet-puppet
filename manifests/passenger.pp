@@ -99,6 +99,13 @@ class puppet::passenger(
     require   => File[$puppet_conf]
   }
 
+  file { $puppet_docroot:
+    ensure => directory,
+    owner  => 'puppet',
+    group  => 'puppet',
+    mode   => '0755',
+  }
+
   apache::vhost { "puppet-${puppet_site}":
     port               => $puppet_passenger_port,
     priority           => '40',
@@ -111,7 +118,7 @@ class puppet::passenger(
     ssl                => true,
   }
 
-  file { ['/etc/puppet/rack']:
+  file { '/etc/puppet/rack':
     ensure => directory,
     owner  => 'puppet',
     group  => 'puppet',

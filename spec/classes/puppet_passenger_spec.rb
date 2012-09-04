@@ -38,6 +38,12 @@ describe 'puppet::passenger', :type => :class do
                     :path    => '/usr/bin:/usr/local/bin',
                     :require  => "File[#{params[:puppet_conf]}]"
                 )
+                should contain_file(params[:puppet_docroot]).with(
+                    :ensure => 'directory',
+                    :owner  => 'puppet',
+                    :group  => 'puppet',
+                    :mode   => '0755'
+                )
                 should contain_file('/etc/puppet/rack').with(
                     :ensure => 'directory',
                     :owner  => 'puppet',
