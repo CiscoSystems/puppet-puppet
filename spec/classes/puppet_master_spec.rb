@@ -102,6 +102,13 @@ describe 'puppet::master', :type => :class do
                 :value   => 'store',
                 :require => 'File[/etc/puppet/puppet.conf]'
             )
+            should contain_ini_setting('puppetmasterpluginsync').with(
+                :ensure  => 'present',
+                :section => 'master',
+                :setting => 'pluginsync',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => 'true'
+            )
         }
     end
 end

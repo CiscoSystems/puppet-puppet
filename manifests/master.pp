@@ -63,7 +63,8 @@ class puppet::master (
   $puppet_master_package    = $::puppet::params::puppet_master_package,
   $puppet_master_service    = $::puppet::params::puppet_master_service,
   $version                  = 'present',
-  $apache_serveradmin       = $::puppet::params::apache_serveradmin
+  $apache_serveradmin       = $::puppet::params::apache_serveradmin,
+  $pluginsync               = 'true'
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -153,59 +154,53 @@ class puppet::master (
     }
   }
 
+  Ini_setting {
+      path    => $::puppet::params::puppet_conf,
+      require => File[$::puppet::params::puppet_conf],
+      section => 'master',
+  }
+
   ini_setting {'puppetmastermodulepath':
     ensure  => present,
-    section => 'master',
     setting => 'modulepath',
-    path    => $::puppet::params::puppet_conf,
     value   => $modulepath,
-    require => File[$::puppet::params::puppet_conf],
   }
 
   ini_setting {'puppetmastermanifest':
     ensure  => present,
-    section => 'master',
     setting => 'manifest',
-    path    => $::puppet::params::puppet_conf,
     value   => $manifest,
-    require => File[$::puppet::params::puppet_conf],
   }
 
   ini_setting {'puppetmasterautosign':
     ensure  => present,
-    section => 'master',
     setting => 'autosign',
-    path    => $::puppet::params::puppet_conf,
     value   => $autosign,
-    require => File[$::puppet::params::puppet_conf],
   }
 
   ini_setting {'puppetmastercertname':
     ensure  => present,
-    section => 'master',
     setting => 'certname',
-    path    => $::puppet::params::puppet_conf,
     value   => $certname,
-    require => File[$::puppet::params::puppet_conf],
   }
 
   ini_setting {'puppetmasterreports':
     ensure  => present,
-    section => 'master',
     setting => 'reports',
-    path    => $::puppet::params::puppet_conf,
     value   => $reports,
-    require => File[$::puppet::params::puppet_conf],
+  }
+
+  ini_setting {'puppetmasterpluginsync':
+    ensure  => present,
+    setting => 'pluginsync',
+    value   => $pluginsync,
   }
 
   if $reporturl != 'UNSET'{
     ini_setting {'puppetmasterreport':
       ensure  => present,
-      section => 'master',
       setting => 'reporturl',
-      path    => $::puppet::params::puppet_conf,
       value   => $reporturl,
-      require => File[$::puppet::params::puppet_conf],
     }
   }
 }
