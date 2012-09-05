@@ -1,2 +1,8 @@
 2012-08-28 - Stephen Johnson <stephen@pupppetlabs.com> - 0.0.2
  * Revert inifile updating sheel scripts as it adds spaces 
+2012-08-31 - Stephen Johnson <stephen@puppetlabs.com> - 0.0.3
+ * Fix reporting and add more spec tests
+2012-09-05 - Stephen Johnson <stephen@puppetlabs.com> - 0.0.4
+ * Add pluginsync support
+ * Fix issue with inherited file permissions
+ * Cleanup code to use resource defaults
