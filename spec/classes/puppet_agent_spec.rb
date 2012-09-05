@@ -97,6 +97,13 @@ describe 'puppet::agent', :type => :class do
                 :path    => '/etc/puppet/puppet.conf',
                 :value   => 'true'
             )
+            should contain_ini_setting('puppetagentpluginsync').with(
+                :ensure  => 'present',
+                :section => 'agent',
+                :setting => 'pluginsync',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => 'true'
+            )
         }
     end
  context 'on Debian operatingsystems using cron' do
@@ -195,6 +202,13 @@ describe 'puppet::agent', :type => :class do
                 :ensure  => 'present',
                 :section => 'agent',
                 :setting => 'report',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => 'true'
+            )
+            should contain_ini_setting('puppetagentpluginsync').with(
+                :ensure  => 'present',
+                :section => 'agent',
+                :setting => 'pluginsync',
                 :path    => '/etc/puppet/puppet.conf',
                 :value   => 'true'
             )

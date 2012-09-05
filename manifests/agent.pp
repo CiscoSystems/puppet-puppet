@@ -15,6 +15,7 @@
 #   ['splay']                 - If splay should be enable defaults to false
 #   ['environment']           - The environment of the puppet agent
 #   ['report']                - Whether to return reports
+#   ['pluginsync']            - Whethere to have pluginsync
 #
 # Actions:
 # - Install and configures the puppet agent
@@ -41,7 +42,8 @@ class puppet::agent(
   $group_id               = undef,
   $splay                  = false,
   $environment            = 'production',
-  $report                 = 'true'
+  $report                 = 'true',
+  $pluginsync             = 'true'
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -149,56 +151,49 @@ class puppet::agent(
   #run interval in seconds
   $runinterval = $puppet_run_interval * 60
 
+  Ini_setting {
+      path    => $::puppet::params::puppet_conf,
+      require => File[$::puppet::params::puppet_conf],
+      section => 'agent',
+  }
+
   ini_setting {'puppetagentmaster':
     ensure  => present,
-    section => 'agent',
     setting => 'server',
-    path    => $::puppet::params::puppet_conf,
     value   => $puppet_server,
-    require => File[$::puppet::params::puppet_conf],
   }
 
   ini_setting {'puppetagentenvironment':
     ensure  => present,
-    section => 'agent',
     setting => 'environment',
-    path    => $::puppet::params::puppet_conf,
     value   => $environment,
-    require => File[$::puppet::params::puppet_conf],
   }
 
   ini_setting {'puppetagentruninterval':
     ensure  => present,
-    section => 'agent',
     setting => 'runinterval',
-    path    => $::puppet::params::puppet_conf,
     value   => $runinterval,
-    require => File[$::puppet::params::puppet_conf],
   }
 
   ini_setting {'puppetagentsplay':
     ensure  => present,
-    section => 'agent',
     setting => 'splay',
-    path    => $::puppet::params::puppet_conf,
     value   => $splay,
-    require => File[$::puppet::params::puppet_conf],
   }
 
   ini_setting {'puppetmasterport':
     ensure  => present,
-    section => 'agent',
     setting => 'masterport',
-    path    => $::puppet::params::puppet_conf,
     value   => $puppet_server_port,
-    require => File[$::puppet::params::puppet_conf],
   }
   ini_setting {'puppetagentreport':
     ensure  => present,
-    section => 'agent',
     setting => 'report',
-    path    => $::puppet::params::puppet_conf,
     value   => $report,
-    require => File[$::puppet::params::puppet_conf],
+  }
+  ini_setting {'puppetagentpluginsync':
+    ensure  => present,
+    setting => 'pluginsync',
+    value   => $pluginsync,
   }
 }
