@@ -25,6 +25,16 @@ running through webrick. In which case run a single puppet run using
 	     storeconfigs              => true,
 	}
 
+### Master environments ###
+	puppet::masterenv {'dev':
+	 	modulepath => '/etc/puppet/evn/dev/modules', 
+	 	manifest   => '/etc/puppet/env/dev/site.pp',
+	}
+	puppet::masterenv {'production':
+	 	modulepath => '/etc/puppet/evn/production/modules', 
+	 	manifest   => '/etc/puppet/env/production/site.pp',
+	}
+
 ## Agent ##
 
 	class { 'puppet::agent':
@@ -32,3 +42,4 @@ running through webrick. In which case run a single puppet run using
 	 	environment               => production,
 	 	splay                     => true,
 	 }
+

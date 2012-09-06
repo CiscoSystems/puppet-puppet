@@ -157,6 +157,7 @@ class puppet::master (
   Ini_setting {
       path    => $::puppet::params::puppet_conf,
       require => File[$::puppet::params::puppet_conf],
+      notify  => Service['httpd'],
       section => 'master',
   }
 
