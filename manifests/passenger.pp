@@ -10,6 +10,7 @@
 #   ['puppet_conf']              - The puppet config dir
 #   ['puppet_ssldir']            - The pupet ssl dir
 #   ['certname']                 - The puppet certname
+#   [conf_dir]                   - The configuration directory of the puppet install
 #
 # Actions:
 # - Configures apache and passenger for puppet master use.
@@ -28,6 +29,7 @@
 #           puppet_conf            => '/etc/puppet/puppet.conf',
 #           puppet_ssldir          => '/var/lib/puppet/ssl',
 #           certname               => 'puppet.example.com',
+#           conf_dir               => '/etc/puppet',
 #   }
 #
 class puppet::passenger(
@@ -37,7 +39,8 @@ class puppet::passenger(
   $puppet_site,
   $puppet_conf,
   $puppet_ssldir,
-  $certname
+  $certname,
+  $conf_dir
 ){
   include apache
   include puppet::params
@@ -129,7 +132,7 @@ class puppet::passenger(
     ensure => present,
     owner  => $::puppet::params::puppet_user,
     group  => $::puppet::params::puppet_group,
-    source => 'puppet:///modules/puppet/config.ru',
+    content => template('puppet/config.erb'),
     mode   => '0644',
   }
 

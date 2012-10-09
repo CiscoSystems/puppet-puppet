@@ -96,6 +96,7 @@ class puppet::master (
     puppet_conf            => $::puppet::params::puppet_conf,
     puppet_ssldir          => $::puppet::params::puppet_ssldir,
     certname               => $certname,
+    conf_dir               => $::puppet::params::confdir,
   }
 
   service { $puppet_master_service:
@@ -146,11 +147,12 @@ class puppet::master (
 
   if $storeconfigs {
     class { 'puppet::storeconfigs':
-      dbserver        => $storeconfigs_dbserver,
-      dbport          => $storeconfigs_dbport,
-      puppet_service  => Service['httpd'],
-      puppet_confdir  => $::puppet::params::puppet_confdir,
-      puppet_conf     => $::puppet::params::puppet_conf,
+      dbserver              => $storeconfigs_dbserver,
+      dbport                => $storeconfigs_dbport,
+      puppet_service        => Service['httpd'],
+      puppet_confdir        => $::puppet::params::puppet_confdir,
+      puppet_conf           => $::puppet::params::puppet_conf,
+      puppet_master_package => $puppet_master_package,
     }
   }
 

@@ -11,7 +11,8 @@ describe 'puppet::passenger', :type => :class do
                 :puppet_site           => 'test.test.com',
                 :puppet_conf           => '/etc/puppet/puppet.conf',
                 :puppet_ssldir         => '/var/lib/puppet/ssl',
-                :certname              => 'test.test.com'
+                :certname              => 'test.test.com',
+                :conf_dir              => '/etc/puppet'
         }
         end
 
