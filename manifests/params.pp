@@ -29,8 +29,8 @@ class puppet::params {
   $puppet_agent_enabled             = true
   $apache_serveradmin               = 'root'
 
-  case $::operatingsystem {
-    'centos', 'redhat', 'fedora': {
+  case $::osfamily {
+    RedHat: {
       $puppet_master_package        = 'puppet-server'
       $puppet_master_service        = 'puppetmaster'
       $puppet_agent_service         = 'puppet'
@@ -45,7 +45,7 @@ class puppet::params {
       $rails_package                = ''
       $rack_package                 = ''
     }
-    'ubuntu', 'debian': {
+    Debian: {
       $puppet_master_package        = 'puppetmaster'
       $puppet_master_service        = 'puppetmaster'
       $puppet_agent_service         = 'puppet'
@@ -60,14 +60,14 @@ class puppet::params {
       $rails_package                = 'rails'
       $rack_package                 = 'librack-ruby'
     }
-    'freebsd': {
+    FreeBSD: {
       $puppet_agent_service         = 'puppet'
       $puppet_agent_package         = 'puppet'
       $puppet_conf                  = '/usr/local/etc/puppet/puppet.conf'
       $puppet_vardir                = '/var/puppet'
       $puppet_ssldir                = '/var/puppet/ssl'
     }
-    'darwin': {
+    Darwin: {
       $puppet_agent_service         = 'com.puppetlabs.puppet'
       $puppet_agent_package         = 'puppet'
       $puppet_conf                  = '/etc/puppet/puppet.conf'
