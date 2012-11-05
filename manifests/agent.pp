@@ -42,8 +42,8 @@ class puppet::agent(
   $group_id               = undef,
   $splay                  = false,
   $environment            = 'production',
-  $report                 = 'true',
-  $pluginsync             = 'true'
+  $report                 = true,
+  $pluginsync             = true
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
