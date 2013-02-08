@@ -17,6 +17,16 @@ class puppet($run_master = false,
 			ensure => present
 		}
 
+                # now fix the rails.log permissions issue
+                file {'railslog':
+                        path    => '/var/log/puppet/rails.log',
+                        ensure  => present,
+                        mode    => 0644,
+                        owner   => "puppet",
+                        group   => "puppet",
+                }
+
+
 		# set up mysql server
 		class { 'mysql::server':
 			config_hash => {
