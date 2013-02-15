@@ -105,4 +105,10 @@ class puppet($run_master = false,
 		content => template('puppet/puppet.conf.erb'),
 		require => Package[puppet-common]
 	}
+
+        file { "/etc/cron.d/puppet_cleanup":
+                content => template('puppet/puppet_cleanup.erb'),
+                require => Package[puppet-common],
+        }
+
 }
