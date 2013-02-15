@@ -12,15 +12,18 @@ runinterval=<%= runinterval %>
 <% if extra_modules != "" %>modulepath=<%= extra_modules %>:$confdir/modules:/usr/share/puppet/modules<% end %>
 <% if puppetmaster_address != "" %>server=<%= puppetmaster_address %><% end %>
 <% if certname != "" %>certname=<%= certname %><% end %>
-
-[master]
-# These are needed when the puppetmaster is run by passenger
-# and can safely be removed if webrick is used.
-ssl_client_header = SSL_CLIENT_S_DN 
-ssl_client_verify_header = SSL_CLIENT_VERIFY
+#
+# put storeconfigs configuration in main stanza so works with both
+#  puppet agent and puppet apply runs
 storeconfigs = true
 thin_storeconfigs = true
 dbadapter = mysql
 dbuser = puppet
 dbpassword = <%= mysql_password %>
 dbserver = localhost
+
+[master]
+# These are needed when the puppetmaster is run by passenger
+# and can safely be removed if webrick is used.
+ssl_client_header = SSL_CLIENT_S_DN 
+ssl_client_verify_header = SSL_CLIENT_VERIFY
