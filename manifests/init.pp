@@ -109,6 +109,9 @@ class puppet($run_master = false,
         file { "/etc/cron.d/puppet_cleanup":
                 content => template('puppet/puppet_cleanup.erb'),
                 require => Package[puppet-common],
+                owner   => root,
+                group   => root,
+                mode    => 0644
         }
 
 }
