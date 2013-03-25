@@ -23,6 +23,7 @@
 #  ['puppet_master_service']    - Puppet master service
 #  ['version']                  - Version of the puppet master package to install
 #  ['apache_serveradmin']       - Apache server admin
+#  ['puppetdb_startup_timeout'] - The timeout for puppetdb
 #
 # Requires:
 #
@@ -64,7 +65,8 @@ class puppet::master (
   $puppet_master_service    = $::puppet::params::puppet_master_service,
   $version                  = 'present',
   $apache_serveradmin       = $::puppet::params::apache_serveradmin,
-  $pluginsync               = 'true'
+  $pluginsync               = 'true',
+  $puppetdb_startup_timeout = '60'
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -147,12 +149,13 @@ class puppet::master (
 
   if $storeconfigs {
     class { 'puppet::storeconfigs':
-      dbserver              => $storeconfigs_dbserver,
-      dbport                => $storeconfigs_dbport,
-      puppet_service        => Service['httpd'],
-      puppet_confdir        => $::puppet::params::puppet_confdir,
-      puppet_conf           => $::puppet::params::puppet_conf,
-      puppet_master_package => $puppet_master_package,
+      dbserver                  => $storeconfigs_dbserver,
+      dbport                    => $storeconfigs_dbport,
+      puppet_service            => Service['httpd'],
+      puppet_confdir            => $::puppet::params::puppet_confdir,
+      puppet_conf               => $::puppet::params::puppet_conf,
+      puppet_master_package     => $puppet_master_package,
+      puppetdb_startup_timeout => $puppetdb_startup_timeout,
     }
   }
 

@@ -16,7 +16,8 @@ describe 'puppet::storeconfigs', :type => :class do
                 :puppet_service        => 'Service[httpd]',
                 :puppet_confdir        => '/etc/puppet/',
                 :puppet_conf           => '/etc/puppet/puppet.conf',
-                :puppet_master_package => 'puppstmaster'
+                :puppet_master_package => 'puppstmaster',
+                :puppetdb_startup_timeout => '60'
             }
         end
 
