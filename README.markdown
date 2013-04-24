@@ -20,7 +20,7 @@ running through webrick. In which case run a single puppet run using
 	puppet apply -e "class { 'puppet::master': storeconfigs => true }"
 
 ## Master ##
-
+  class { 'puppetdb': }  
 	class { 'puppet::master':
 	     storeconfigs              => true,
 	}
