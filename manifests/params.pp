@@ -36,14 +36,11 @@ class puppet::params {
       $puppet_agent_service         = 'puppet'
       $puppet_agent_package         = 'puppet'
       $puppet_defaults              = '/etc/sysconfig/puppet'
-      $puppet_dashboard_report      = ''
-      $puppet_storeconfigs_packages = 'mysql-devel'
       $puppet_conf                  = '/etc/puppet/puppet.conf'
       $puppet_vardir                = '/var/lib/puppet'
       $puppet_ssldir                = '/var/lib/puppet/ssl'
-      $passenger_package            = ''
-      $rails_package                = ''
-      $rack_package                 = ''
+      $passenger_package            = 'mod_passenger'
+      $rack_package                 = 'rubygem-rack'
     }
     Debian: {
       $puppet_master_package        = 'puppetmaster'
@@ -51,13 +48,10 @@ class puppet::params {
       $puppet_agent_service         = 'puppet'
       $puppet_agent_package         = 'puppet'
       $puppet_defaults              = '/etc/default/puppet'
-      $puppet_dashboard_report      = '/usr/lib/ruby/1.8/puppet/reports/puppet_dashboard.rb'
-      $puppet_storeconfigs_packages = 'libmysql-ruby'
       $puppet_conf                  = '/etc/puppet/puppet.conf'
       $puppet_vardir                = '/var/lib/puppet'
       $puppet_ssldir                = '/var/lib/puppet/ssl'
       $passenger_package            = 'libapache2-mod-passenger'
-      $rails_package                = 'rails'
       $rack_package                 = 'librack-ruby'
     }
     FreeBSD: {

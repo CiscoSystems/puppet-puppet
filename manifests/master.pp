@@ -155,7 +155,7 @@ class puppet::master (
       puppet_confdir            => $::puppet::params::puppet_confdir,
       puppet_conf               => $::puppet::params::puppet_conf,
       puppet_master_package     => $puppet_master_package,
-      puppetdb_startup_timeout => $puppetdb_startup_timeout,
+      puppetdb_startup_timeout  => $puppetdb_startup_timeout,
     }
   }
 

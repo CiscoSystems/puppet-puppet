@@ -45,50 +45,17 @@ class puppet::passenger(
   include apache
   include puppet::params
 
-  case $::operatingsystem {
-    'ubuntu', 'debian': {
-
-      if ! defined(Package[$::puppet::params::passenger_package]) {
-        package{$::puppet::params::passenger_package:
-          ensure => 'present',
-          before => File['/etc/puppet/rack'],
-        }
-      }else {
-        Package<| title == $::puppet::params::passenger_package |> {
-          notify +> Service['httpd'],
+  case $::osfamily {
+    'redhat', 'debian': {
+      include apache::mod::passenger
+      include apache::mod::ssl
+      if $::osfamily == 'redhat' {
+        #hack so we dont nuke the passenger file
+        file{'/etc/httpd/conf.d/passenger.conf':
+          ensure => present,
         }
       }
-
-      if ! defined(Package[$::puppet::params::rails_package]) {
-        package{$::puppet::params::rails_package:
-          ensure => 'present',
-          before => File['/etc/puppet/rack'],
-        }
-      }
-      else {
-        Package<| title == $::puppet::params::rails_package |> {
-          before +> File['/etc/puppet/rack'],
-        }
-      }
-
-      if ! defined(Package[$::puppet::params::rack_package]) {
-        package{$::puppet::params::rack_package:
-          ensure => 'present',
-          before => File['/etc/puppet/rack'],
-        }
-      }
-      else {
-        Package<| title == $::puppet::params::rack_package |> {
-          before +> File['/etc/puppet/rack'],
-        }
-      }
-
-      a2mod {'passenger':
-        ensure  => 'present',
-        require => Package[$::puppet::params::passenger_package],
-      }
-
-    }
+   }
     default: {
       err('The Puppet passenger module does not support your os')
     }
