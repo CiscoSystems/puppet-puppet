@@ -8,7 +8,6 @@ describe 'puppet::passenger', :type => :class do
                 :puppet_passenger_port => '8140',
                 :puppet_docroot        => '/etc/puppet/rack/public/',
                 :apache_serveradmin    => 'root', 
-                :puppet_site           => 'test.test.com',
                 :puppet_conf           => '/etc/puppet/puppet.conf',
                 :puppet_ssldir         => '/var/lib/puppet/ssl',
                 :certname              => 'test.test.com',

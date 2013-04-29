@@ -3,6 +3,6 @@ fixtures:
         "stdlib":  "git://github.com/puppetlabs/puppetlabs-stdlib.git"
         'apache':  "git://github.com/puppetlabs/puppetlabs-apache.git"
         'puppetdb': "git@github.com:puppetlabs/puppetlabs-puppetdb.git"
-        'inifile':  "git://github.com/cprice-puppet/puppetlabs-inifile.git"
+        'inifile': "git://github.com/cprice-puppet/puppetlabs-inifile.git"
     symlinks:
         "puppet": "#{source_dir}"

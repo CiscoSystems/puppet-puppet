@@ -7,6 +7,7 @@ describe 'puppet::master', :type => :class do
             { 
                 :osfamily        => 'Debian',
                 :operatingsystem => 'Debian',
+                :operatingsystemrelease => '5',
             }
         end
         let (:params) do
