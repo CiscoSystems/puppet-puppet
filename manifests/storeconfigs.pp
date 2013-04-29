@@ -45,15 +45,7 @@ if ! defined(Class['puppetdb::master::config']) {
         restart_puppet           => false,
         notify                   => $puppet_service,
         puppetdb_startup_timeout => $puppetdb_startup_timeout,
+        require                  => Class['puppetdb'],
       }
   }  
-    
-  exec { "createkeypuppetdb":
-    command => "puppetdb-ssl-setup",
-    path    => "/usr/bin:/usr/sbin:/bin:/usr/local/bin",
-    creates => "/etc/puppetdb/ssl/keystore.jks",
-    before  => Class['puppetdb::master::config'],
-    require => [Package['puppetdb'],Package[$puppet_master_package]],
-    notify  => Service['puppetdb'],
-  }
 }

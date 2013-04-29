@@ -14,7 +14,6 @@
 #  ['certname']                 - The certname the puppet master should use
 #  ['autosign']                 - Auto sign agent certificates default false
 #  ['reporturl']                - Url to send reports to, if reporting enabled
-#  ['puppet_site']              - Puppet site
 #  ['puppet_ssldir']            - Puppet sll directory
 #  ['puppet_docroot']           - Doc root to be configured in apache vhost
 #  ['puppet_vardir']            - Vardir used by puppet
@@ -56,7 +55,6 @@ class puppet::master (
   $certname                 = $::fqdn,
   $autosign                 = false,
   $reporturl                = 'UNSET',
-  $puppet_site              = $::puppet::params::puppet_site,
   $puppet_ssldir            = $::puppet::params::puppet_ssldir,
   $puppet_docroot           = $::puppet::params::puppet_docroot,
   $puppet_vardir            = $::puppet::params::puppet_vardir,
@@ -94,7 +92,6 @@ class puppet::master (
     puppet_passenger_port  => $puppet_passenger_port,
     puppet_docroot         => $puppet_docroot,
     apache_serveradmin     => $apache_serveradmin,
-    puppet_site            => $puppet_site,
     puppet_conf            => $::puppet::params::puppet_conf,
     puppet_ssldir          => $::puppet::params::puppet_ssldir,
     certname               => $certname,

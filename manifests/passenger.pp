@@ -36,7 +36,6 @@ class puppet::passenger(
   $puppet_passenger_port,
   $puppet_docroot,
   $apache_serveradmin,
-  $puppet_site,
   $puppet_conf,
   $puppet_ssldir,
   $certname,
@@ -53,6 +52,13 @@ class puppet::passenger(
         #hack so we dont nuke the passenger file
         file{'/etc/httpd/conf.d/passenger.conf':
           ensure => present,
+        }
+
+        file{'/var/lib/puppet/reports':
+          ensure => directory,
+          owner  => $::puppet::params::puppet_user,
+          group  => $::puppet::params::puppet_group,
+          mode   => '0750',
         }
       }
    }
