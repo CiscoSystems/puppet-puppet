@@ -1,5 +1,5 @@
 name 'stephenrjohnson-puppet'
-version '0.0.6'
+version '0.0.7'
 source 'git://github.com/stephenrjohnson/puppetlabs-puppet.git'
 author 'Stephen Johnson'
 description 'Resource types for managing puppet master and agent'
