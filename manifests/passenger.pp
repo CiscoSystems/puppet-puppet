@@ -6,7 +6,6 @@
 #   ['puppet_passenger_port']    - The port for the virtual host
 #   ['puppet_docroot']           - Apache documnet root
 #   ['apache_serveradmin']       - The apache server admin
-#   ['puppet_site']              - The dns name for the puppet vhost
 #   ['puppet_conf']              - The puppet config dir
 #   ['puppet_ssldir']            - The pupet ssl dir
 #   ['certname']                 - The puppet certname
@@ -25,7 +24,6 @@
 #           puppet_passenger_port  => 8140,
 #           puppet_docroot         => '/etc/puppet/docroot',
 #           apache_serveradmin     => 'wibble',
-#           puppet_site            => 'puppet.example.com',
 #           puppet_conf            => '/etc/puppet/puppet.conf',
 #           puppet_ssldir          => '/var/lib/puppet/ssl',
 #           certname               => 'puppet.example.com',
@@ -82,13 +80,13 @@ class puppet::passenger(
     mode   => '0755',
   }
 
-  apache::vhost { "puppet-${puppet_site}":
+  apache::vhost { "puppet-${certname}":
     port               => $puppet_passenger_port,
     priority           => '40',
     docroot            => $puppet_docroot,
     configure_firewall => false,
     serveradmin        => $apache_serveradmin,
-    servername         => $puppet_site,
+    servername         => $certname,
     template           => 'puppet/apache2.conf.erb',
     require            => [ File['/etc/puppet/rack/config.ru'], File[$puppet_conf] ],
     ssl                => true,
@@ -127,3 +125,4 @@ class puppet::passenger(
     require => File[$puppet_conf],
   }
 }
+
