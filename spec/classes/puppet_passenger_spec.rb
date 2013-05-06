@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'puppet::passenger', :type => :class do
-
-    context 'on Debian' do
         let (:params) do
             {
                 :puppet_passenger_port => '8140',
@@ -14,11 +12,11 @@ describe 'puppet::passenger', :type => :class do
                 :conf_dir              => '/etc/puppet'
         }
         end
-
+    context 'on Debian' do
         let(:facts) do
             { 
-                :osfamily        => 'Debian',
-                :operatingsystem => 'Debian',
+                :osfamily        => 'debian',
+                :operatingsystem => 'debian',
             }
         end
          it {
@@ -66,6 +64,18 @@ describe 'puppet::passenger', :type => :class do
                     :value   =>'SSL_CLIENT_VERIFY',
                     :require => "File[#{params[:puppet_conf]}]"
                 )
+        }
+    end
+    context 'on Redhat' do
+        let(:facts) do
+            { 
+                :osfamily        => 'Redhat',
+                :operatingsystem => 'Redhat',
+            }
+        end
+         it {
+                should contain_file('/etc/httpd/conf.d/passenger.conf')
+                should contain_file('/var/lib/puppet/reports')
         }
     end
 end

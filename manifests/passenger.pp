@@ -41,27 +41,20 @@ class puppet::passenger(
 ){
   include apache
   include puppet::params
+  include apache::mod::passenger
+  include apache::mod::ssl
 
-  case $::osfamily {
-    'redhat', 'debian': {
-      include apache::mod::passenger
-      include apache::mod::ssl
-      if $::osfamily == 'redhat' {
-        #hack so we dont nuke the passenger file
-        file{'/etc/httpd/conf.d/passenger.conf':
-          ensure => present,
-        }
+  if $::osfamily == 'redhat' {
+    #hack so we dont nuke the passenger file
+    file{'/etc/httpd/conf.d/passenger.conf':
+      ensure => present,
+    }
 
-        file{'/var/lib/puppet/reports':
-          ensure => directory,
-          owner  => $::puppet::params::puppet_user,
-          group  => $::puppet::params::puppet_group,
-          mode   => '0750',
-        }
-      }
-   }
-    default: {
-      err('The Puppet passenger module does not support your os')
+    file{'/var/lib/puppet/reports':
+      ensure => directory,
+      owner  => $::puppet::params::puppet_user,
+      group  => $::puppet::params::puppet_group,
+      mode   => '0750',
     }
   }
 
