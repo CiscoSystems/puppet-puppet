@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/stephenrjohnson/puppetlabs-puppet.png)](https://travis-ci.org/stephenrjohnson/puppetlabs-puppet)
 # Puppet module #
 
 This module provides classes for managing the puppet agent and puppet master. 
