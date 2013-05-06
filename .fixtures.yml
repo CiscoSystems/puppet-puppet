@@ -4,7 +4,7 @@ fixtures:
         'apache':  
           repo: "git://github.com/puppetlabs/puppetlabs-apache.git"
           ref: 0.6.0
-        'puppetdb': "git@github.com:puppetlabs/puppetlabs-puppetdb.git"
+        'puppetdb': "git://github.com/puppetlabs/puppetlabs-puppetdb.git"
         'inifile': "git://github.com/cprice-puppet/puppetlabs-inifile.git"
     symlinks:
         "puppet": "#{source_dir}"
