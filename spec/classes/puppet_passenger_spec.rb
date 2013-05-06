@@ -24,14 +24,8 @@ describe 'puppet::passenger', :type => :class do
          it {
                 should include_class('apache')
                 should include_class('puppet::params')
-                should contain_package('libapache2-mod-passenger').with(
-                    :before => 'File[/etc/puppet/rack]')
-                should contain_package('rails').with(
-                    :before => 'File[/etc/puppet/rack]'
-                )
-                should contain_package('librack-ruby').with(
-                    :before => 'File[/etc/puppet/rack]'
-                )
+                should include_class('apache::mod::passenger')
+                should include_class('apache::mod::ssl')
                 should contain_exec('Certificate_Check').with(
                     :command => "puppet cert --generate #{params[:certname]} --trace",
                     :unless  => "/bin/ls #{params[:puppet_ssldir]}/certs/#{params[:certname]}.pem",
