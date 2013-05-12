@@ -16,6 +16,8 @@
 #   ['environment']           - The environment of the puppet agent
 #   ['report']                - Whether to return reports
 #   ['pluginsync']            - Whethere to have pluginsync
+#   ['use_srv_records']       - Whethere to use srv records
+#   ['srv_domain']            - Domain to request the srv records
 #
 # Actions:
 # - Install and configures the puppet agent
@@ -43,7 +45,9 @@ class puppet::agent(
   $splay                  = false,
   $environment            = 'production',
   $report                 = true,
-  $pluginsync             = true
+  $pluginsync             = true,
+  $use_srv_records        = false,
+  $srv_domain             = undef
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -157,16 +161,42 @@ class puppet::agent(
       section => 'agent',
   }
 
-  ini_setting {'puppetagentmaster':
-    ensure  => present,
-    setting => 'server',
-    value   => $puppet_server,
+  if (($use_srv_records == true) and ($srv_domain == undef))
+  {
+    fail("${module_name} has attribute use_srv_records set but has srv_domain unset")
+  }
+  elsif (($use_srv_records == true) and ($srv_domain != undef))
+  {
+    ini_setting {'puppetagentsrv_domain':
+      ensure  => present,
+      setting => 'srv_domain',
+      value   => $srv_domain,
+    }
+  }
+  elsif($use_srv_records == false)
+  {
+    ini_setting {'puppetagentsrv_domain':
+      ensure  => absent,
+      setting => 'srv_domain',
+    }
   }
 
   ini_setting {'puppetagentenvironment':
     ensure  => present,
     setting => 'environment',
     value   => $environment,
+  }
+
+  ini_setting {'puppetagentmaster':
+    ensure        => present,
+    setting   => 'server',
+    value => $puppet_server,
+  }
+
+  ini_setting {'puppetagentuse_srv_records':
+    ensure  => present,
+    setting => 'use_srv_records',
+    value   => $use_srv_records,
   }
 
   ini_setting {'puppetagentruninterval':
