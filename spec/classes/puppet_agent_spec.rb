@@ -111,7 +111,7 @@ describe 'puppet::agent', :type => :class do
 
         it{
             should contain_ini_setting('puppetagentsrv_domain').with(
-                :ensure  => 'adsent',
+                :ensure  => 'absent',
                 :section => 'agent',
                 :setting => 'srv_domain',
                 :path    => '/etc/puppet/puppet.conf',

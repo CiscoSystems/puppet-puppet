@@ -1,9 +1,3 @@
-2013-05-01
-  * Fix puppet site references 
-2013-03-29
-  * Added redhat support
-2013-03-22
- * Updated dependencies 
 2012-08-28 - Stephen Johnson <stephen@pupppetlabs.com> - 0.0.2
  * Revert inifile updating sheel scripts as it adds spaces 
 2012-08-31 - Stephen Johnson <stephen@puppetlabs.com> - 0.0.3
@@ -12,3 +6,14 @@
  * Add pluginsync support
  * Fix issue with inherited file permissions
  * Cleanup code to use resource defaults
+ 2013-03-22 Stephen Johnson <stephen@puppetlabs.com> - 0.0.5
+ * Updated dependencies 
+2013-03-29 Stephen Johnson <stephen@puppetlabs.com> - 0.0.7
+  * Added redhat support
+2013-05-01 Stephen Johnson <stephen@puppetlabs.com> - 0.0.8
+  * Fix puppet site references 
+2013-05-12 Stephen Johnson <stephen@puppetlabs.com> - 0.0.9
+  * Add srv record support to client 
+
+
+
