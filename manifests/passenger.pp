@@ -80,7 +80,7 @@ class puppet::passenger(
     configure_firewall => false,
     serveradmin        => $apache_serveradmin,
     servername         => $certname,
-    template           => 'puppet/apache2.conf.erb',
+    conf_template      => 'puppet/apache2.conf.erb',
     require            => [ File['/etc/puppet/rack/config.ru'], File[$puppet_conf] ],
     ssl                => true,
   }
