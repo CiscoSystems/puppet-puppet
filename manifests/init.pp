@@ -8,12 +8,27 @@ class puppet($run_master = false,
              $mysql_root_password = 'changeMe',
              $mysql_password = 'changeMe') {
 
-	package { puppet-common:
+        case $::osfamily {
+            'redhat' : {
+                $puppet         = 'puppet'
+                $puppetmaster   = 'puppet-server'
+                $apache_service = 'httpd'
+                $activerecord   = 'rubygem-activerecord'
+            }
+            'debian' : {
+                $puppet         = 'puppet-common'
+                $puppetmaster   = 'puppetmaster-passenger'
+                $apache_service = 'apache2'
+                $activerecord   = 'ruby-activerecord'
+            }
+        }
+        Exec { path => '/bin:/usr/bin:/usr/sbin' }
+	package { $puppet:
 		ensure => present
 	}
 
 	if ($run_master) {
-		package { "puppetmaster-passenger":
+		package { $puppetmaster:
 			ensure => present
 		}
 
@@ -47,7 +62,7 @@ class puppet($run_master = false,
             group => "puppet"
         }
 
-		package { "ruby-activerecord":
+		package { $activerecord:
 			ensure => present
 		}
 
@@ -56,19 +71,24 @@ class puppet($run_master = false,
 		}
 
 		File <| title == "/etc/puppet/puppet.conf" |> {
-			notify +> Exec["restart-puppetmaster"]
+			notify +> Service[$apache_service]
 		}
 
 		file { "/etc/puppet/autosign.conf":
 			ensure => present,
 			content   => template('puppet/autosign.conf.erb'),
 		}
-
-		exec { "restart-puppetmaster":
-			command => "/usr/sbin/service apache2 restart",
-			require => Package["puppetmaster-passenger"],
-			refreshonly => true
-		}
+                
+                service { "puppetmaster":
+                    ensure => "running",
+                    require => Package[ $puppetmaster ],
+                }
+                if !defined( Service[$apache_service] ) {
+                   service { $apache_service:
+                        ensure => "running",
+                        notify => Service["puppetmaster"]
+                   }
+                }
 	}
 
 	if ($run_agent) {
@@ -78,11 +98,11 @@ class puppet($run_master = false,
 
 		file { "/etc/default/puppet":
 			content => template('puppet/defaults.erb'),
-			notify => Exec["restart-puppet"],
+			notify => Service["puppet"],
 		}
 
 		File <| title == "/etc/puppet/puppet.conf" |> {
-			notify +> Exec["restart-puppet"]
+			notify +> Service["puppet"]
 		}
 
 		file { "/etc/init.d/puppet":
@@ -90,11 +110,11 @@ class puppet($run_master = false,
 			owner => root,
 			group => root,
 			content => template('puppet/init.erb'),
-			notify => Exec["restart-puppet"]
+			notify => Service["puppet"]
 		}
 
-		exec { "restart-puppet":
-			command => "/usr/sbin/service puppet restart",
+		service { "puppet":
+                        ensure  => "running",
 			require => Package[puppet],
 			refreshonly => true
 		}
@@ -103,12 +123,12 @@ class puppet($run_master = false,
 
 	file { "/etc/puppet/puppet.conf":
 		content => template('puppet/puppet.conf.erb'),
-		require => Package[puppet-common]
+		require => Package[$puppet]
 	}
 
         file { "/etc/cron.d/puppet_cleanup":
                 content => template('puppet/puppet_cleanup.erb'),
-                require => Package[puppet-common],
+                require => Package[$puppet],
                 owner   => root,
                 group   => root,
                 mode    => 0644
