@@ -8,6 +8,7 @@ describe 'puppet::master', :type => :class do
                 :osfamily        => 'Debian',
                 :operatingsystem => 'Debian',
                 :operatingsystemrelease => '5',
+                :concat_basedir => '/nde',
             }
         end
         let (:params) do
