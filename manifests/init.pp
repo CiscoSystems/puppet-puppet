@@ -1,14 +1,16 @@
-class puppet($run_master = false,
-             $run_agent = false,
-             $puppetmaster_address = $::fqdn,
-             $certname = $::fqdn,
-             $master_autosign_cert = undef,
-             $runinterval = 120,
-             $extra_modules = "",
-             $mysql_root_password = 'changeMe',
-             $mysql_password = 'changeMe') {
+class puppet(
+  $run_master = false,
+  $run_agent = false,
+  $puppetmaster_address = $::fqdn,
+  $certname = $::fqdn,
+  $master_autosign_cert = undef,
+  $runinterval = 120,
+  $extra_modules = "",
+  $mysql_root_password = 'changeMe',
+  $mysql_password = 'changeMe'
+) {
 
-	package { puppet-common:
+	package { 'puppet-common':
 		ensure => present
 	}
 
@@ -17,15 +19,14 @@ class puppet($run_master = false,
 			ensure => present
 		}
 
-                # now fix the rails.log permissions issue
-                file {'railslog':
-                        path    => '/var/log/puppet/rails.log',
-                        ensure  => present,
-                        mode    => 0644,
-                        owner   => "puppet",
-                        group   => "puppet",
-                }
-
+    # now fix the rails.log permissions issue
+    file { 'railslog':
+      path    => '/var/log/puppet/rails.log',
+      ensure  => present,
+      mode    => 0644,
+      owner   => "puppet",
+      group   => "puppet",
+    }
 
 		# set up mysql server
 		class { 'mysql::server':
@@ -41,11 +42,11 @@ class puppet($run_master = false,
 			host         => localhost,
 		}
 
-        file { "/var/lib/puppet/reports":
-            ensure => "directory",
-            owner => "puppet",
-            group => "puppet"
-        }
+    file { "/var/lib/puppet/reports":
+      ensure => "directory",
+      owner  => "puppet",
+      group  => "puppet"
+    }
 
 		package { "ruby-activerecord":
 			ensure => present
@@ -106,12 +107,12 @@ class puppet($run_master = false,
 		require => Package[puppet-common]
 	}
 
-        file { "/etc/cron.d/puppet_cleanup":
-                content => template('puppet/puppet_cleanup.erb'),
-                require => Package[puppet-common],
-                owner   => root,
-                group   => root,
-                mode    => 0644
-        }
+  file { "/etc/cron.d/puppet_cleanup":
+    content => template('puppet/puppet_cleanup.erb'),
+    require => Package[puppet-common],
+    owner   => root,
+    group   => root,
+    mode    => 0644
+  }
 
 }
