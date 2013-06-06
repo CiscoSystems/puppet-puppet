@@ -25,7 +25,10 @@ describe 'puppet::passenger', :type => :class do
                 should include_class('apache::mod::passenger')
                 should include_class('apache::mod::ssl')
                 should contain_exec('Certificate_Check').with(
-                    :command => "puppet cert --generate #{params[:certname]} --trace",
+                    :command =>
+                      "puppet certificate --ca-location=local generate #{params[:certname]}" +
+                      " && puppet cert sign #{params[:certname]}" +
+                      " && puppet certificate --ca-location=local find #{params[:certname]}",
                     :unless  => "/bin/ls #{params[:puppet_ssldir]}/certs/#{params[:certname]}.pem",
                     :path    => '/usr/bin:/usr/local/bin',
                     :require  => "File[#{params[:puppet_conf]}]"
