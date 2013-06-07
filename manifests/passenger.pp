@@ -58,8 +58,19 @@ class puppet::passenger(
     }
   }
 
+  # first we need to generate the cert
+  # I would have preferred to use puppet cert generate, but it does not
+  # return the corret exit code on some versions of puppet
+  $crt_gen_cmd   = "puppet certificate --ca-location=local generate ${certname}"
+  # I am using the sign command here b/c AFAICT, the sign command for certificate
+  # does not work
+  $crt_sign_cmd  = "puppet cert sign ${certname}"
+  # find is required to move the cert into the certs directory which is
+  # where it needs to be for puppetdb to find it
+  $cert_find_cmd = "puppet certificate --ca-location=local find ${certname}"
+
   exec { 'Certificate_Check':
-    command   => "puppet cert --generate ${certname} --trace",
+    command   => "${crt_gen_cmd} && ${crt_sign_cmd} && ${cert_find_cmd}",
     unless    => "/bin/ls ${puppet_ssldir}/certs/${certname}.pem",
     path      => '/usr/bin:/usr/local/bin',
     logoutput => on_failure,
