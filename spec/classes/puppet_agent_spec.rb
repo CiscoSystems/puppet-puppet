@@ -16,7 +16,7 @@ describe 'puppet::agent', :type => :class do
                 :puppet_agent_package   => 'puppet',
                 :version                => '/etc/puppet/manifests/site.pp',
                 :puppet_run_style       => 'service',
-                :splay                  => 'true',  
+                :splay                  => 'true',
                 :environment            => 'production',
                 :puppet_run_interval    => 30,
                 :puppet_server_port     => 8140,
@@ -34,7 +34,7 @@ describe 'puppet::agent', :type => :class do
                 :ensure  => true,
                 :enable  => true,
                 :require => 'File[/etc/puppet/puppet.conf]'
-            ) 
+            )
         }
     end
  context 'on Debian operatingsystems using cron' do
@@ -45,7 +45,7 @@ describe 'puppet::agent', :type => :class do
                 :puppet_agent_package   => 'puppet',
                 :version                => '/etc/puppet/manifests/site.pp',
                 :puppet_run_style       => 'cron',
-                :splay                  => 'true',  
+                :splay                  => 'true',
                 :environment            => 'production',
                 :puppet_run_interval    => 30,
                 :puppet_server_port     => 8140,
@@ -80,7 +80,7 @@ describe 'puppet::agent', :type => :class do
                 :puppet_agent_package   => 'puppet',
                 :version                => '/etc/puppet/manifests/site.pp',
                 :puppet_run_style       => 'cron',
-                :splay                  => 'true',  
+                :splay                  => 'true',
                 :environment            => 'production',
                 :puppet_run_interval    => 30,
                 :puppet_server_port     => 8140,
@@ -93,7 +93,7 @@ describe 'puppet::agent', :type => :class do
         }
   end
 
- context 'on Debian with use_srv_records falsp' do
+ context 'on Debian with use_srv_records false' do
         let(:params) do
             {
                 :puppet_server          => 'test.exaple.com',
@@ -101,7 +101,7 @@ describe 'puppet::agent', :type => :class do
                 :puppet_agent_package   => 'puppet',
                 :version                => '/etc/puppet/manifests/site.pp',
                 :puppet_run_style       => 'cron',
-                :splay                  => 'true',  
+                :splay                  => 'true',
                 :environment            => 'production',
                 :puppet_run_interval    => 30,
                 :puppet_server_port     => 8140,
@@ -114,7 +114,7 @@ describe 'puppet::agent', :type => :class do
                 :ensure  => 'absent',
                 :section => 'agent',
                 :setting => 'srv_domain',
-                :path    => '/etc/puppet/puppet.conf',
+                :path    => '/etc/puppet/puppet.conf'
             )
         }
  end
@@ -127,7 +127,7 @@ describe 'puppet::agent', :type => :class do
                 :puppet_agent_package   => 'puppet',
                 :version                => '/etc/puppet/manifests/site.pp',
                 :puppet_run_style       => 'cron',
-                :splay                  => 'true',  
+                :splay                  => 'true',
                 :environment            => 'production',
                 :puppet_run_interval    => 30,
                 :puppet_server_port     => 8140,
@@ -149,7 +149,7 @@ describe 'puppet::agent', :type => :class do
               :section => 'agent',
               :setting => 'srv_domain',
               :path    => '/etc/puppet/puppet.conf',
-              :value   => params[:srv_domain],
+              :value   => params[:srv_domain]
             )
         }
         end

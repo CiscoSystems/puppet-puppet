@@ -4,7 +4,7 @@ describe 'puppet::master', :type => :class do
 
     context 'on Debian operatingsystems' do
         let(:facts) do
-            { 
+            {
                 :osfamily        => 'Debian',
                 :operatingsystem => 'Debian',
                 :operatingsystemrelease => '5',
@@ -19,7 +19,7 @@ describe 'puppet::master', :type => :class do
                 :modulepath             => '/etc/puppet/modules',
                 :manifest               => '/etc/puppet/manifests/site.pp',
                 :autosign               => 'true',
-                :certname               => 'test.example.com',  
+                :certname               => 'test.example.com',
                 :storeconfigs           => 'true',
                 :storeconfigs_dbserver  => 'test.example.com'
 
@@ -63,7 +63,12 @@ describe 'puppet::master', :type => :class do
                 :group  => 'puppet',
                 :notify => 'Service[httpd]'
             )
-            should include_class('puppet::storeconfigs')
+            should contain_class('puppet::storeconfigs').with(
+              :before => 'Anchor[puppet::master::end]'
+            )
+            should contain_class('puppet::passenger').with(
+              :before => 'Anchor[puppet::master::end]'
+            )
             should contain_ini_setting('puppetmastermodulepath').with(
                 :ensure  => 'present',
                 :section => 'master',
@@ -111,6 +116,10 @@ describe 'puppet::master', :type => :class do
                 :path    => '/etc/puppet/puppet.conf',
                 :value   => 'true'
             )
+            should contain_anchor('puppet::master::begin').with_before(
+              ['Class[Puppet::Passenger]', 'Class[Puppet::Storeconfigs]']
+            )
+            should contain_anchor('puppet::master::end')
         }
     end
 end

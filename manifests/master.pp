@@ -67,6 +67,8 @@ class puppet::master (
   $puppetdb_startup_timeout = '60'
 ) inherits puppet::params {
 
+  anchor { 'puppet::master::begin': }
+
   if ! defined(User[$::puppet::params::puppet_user]) {
     user { $::puppet::params::puppet_user:
       ensure => present,
@@ -88,6 +90,7 @@ class puppet::master (
     }
   }
 
+  Anchor['puppet::master::begin'] ->
   class {'puppet::passenger':
     puppet_passenger_port  => $puppet_passenger_port,
     puppet_docroot         => $puppet_docroot,
@@ -96,7 +99,8 @@ class puppet::master (
     puppet_ssldir          => $::puppet::params::puppet_ssldir,
     certname               => $certname,
     conf_dir               => $::puppet::params::confdir,
-  }
+  } ->
+  Anchor['puppet::master::end']
 
   service { $puppet_master_service:
     ensure    => stopped,
@@ -145,6 +149,7 @@ class puppet::master (
   }
 
   if $storeconfigs {
+    Anchor['puppet::master::begin'] ->
     class { 'puppet::storeconfigs':
       dbserver                  => $storeconfigs_dbserver,
       dbport                    => $storeconfigs_dbport,
@@ -153,7 +158,8 @@ class puppet::master (
       puppet_conf               => $::puppet::params::puppet_conf,
       puppet_master_package     => $puppet_master_package,
       puppetdb_startup_timeout  => $puppetdb_startup_timeout,
-    }
+    } ->
+    Anchor['puppet::master::end']
   }
 
   Ini_setting {
@@ -206,4 +212,6 @@ class puppet::master (
       value   => $reporturl,
     }
   }
+
+  anchor { 'puppet::master::end': }
 }
