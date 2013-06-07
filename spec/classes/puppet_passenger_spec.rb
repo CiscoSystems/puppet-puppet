@@ -81,7 +81,6 @@ describe 'puppet::passenger', :type => :class do
             }
         end
          it {
-                should contain_file('/etc/httpd/conf.d/passenger.conf')
                 should contain_file('/var/lib/puppet/reports')
         }
     end

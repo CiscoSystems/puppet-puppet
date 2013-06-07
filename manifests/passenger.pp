@@ -45,7 +45,6 @@ class puppet::passenger(
   include apache::mod::ssl
 
   if $::osfamily == 'redhat' {
-
     file{'/var/lib/puppet/reports':
       ensure => directory,
       owner  => $::puppet::params::puppet_user,
