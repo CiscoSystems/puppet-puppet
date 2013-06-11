@@ -71,13 +71,7 @@ class puppet(
      require => Package[ $::puppet::params::puppetmaster ],
    }
    
-   if !defined( Service[$::puppet::params::apache_service] ) {
-     service { $::puppet::params::apache_service:
-       ensure => "running",
-       notify => Service["puppetmaster"]
-     }
-   }
-  }
+  Service[$::puppet::params::apache_service] ~> Service['puppetmaster']
 
   if ($run_agent) {
     package { puppet:
@@ -121,5 +115,5 @@ class puppet(
     group   => root,
     mode    => 0644
   }
-
+ }
 }
