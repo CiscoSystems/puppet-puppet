@@ -47,5 +47,7 @@ if ! defined(Class['puppetdb::master::config']) {
         puppetdb_startup_timeout => $puppetdb_startup_timeout,
         require                  => Class['puppetdb'],
       }
-  }  
+  }
+  #Needed for Redhat to make sure we have the certs before we do anythig with puppetdb
+  Class['puppet::passenger'] -> Class['puppetdb']
 }

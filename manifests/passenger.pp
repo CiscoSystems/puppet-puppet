@@ -75,6 +75,8 @@ class puppet::passenger(
   }
 
   # first we need to generate the cert
+  # Clean the installed certs out ifrst 
+  $crt_clean_cmd  = "puppet cert clean ${certname}"
   # I would have preferred to use puppet cert generate, but it does not
   # return the corret exit code on some versions of puppet
   $crt_gen_cmd   = "puppet certificate --ca-location=local generate ${certname}"
@@ -86,7 +88,7 @@ class puppet::passenger(
   $cert_find_cmd = "puppet certificate --ca-location=local find ${certname}"
 
   exec { 'Certificate_Check':
-    command   => "${crt_gen_cmd} && ${crt_sign_cmd} && ${cert_find_cmd}",
+    command   => "${crt_clean_cmd} ; ${crt_gen_cmd} && ${crt_sign_cmd} && ${cert_find_cmd}",
     unless    => "/bin/ls ${puppet_ssldir}/certs/${certname}.pem",
     path      => '/usr/bin:/usr/local/bin',
     logoutput => on_failure,
