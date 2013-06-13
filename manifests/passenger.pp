@@ -56,6 +56,14 @@ class puppet::passenger(
       group  => $::puppet::params::puppet_group,
       mode   => '0750',
     }
+
+    file{"${puppet_ssldir}/ca/requests":
+      ensure => directory,
+      owner  => $::puppet::params::puppet_user,
+      group  => $::puppet::params::puppet_group,
+      mode   => '0750',
+      before => Exec['Certificate_Check'],
+    }
   }
 
   # first we need to generate the cert
