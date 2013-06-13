@@ -10,13 +10,15 @@ class puppet(
   $mysql_password = 'changeMe'
 ) {
   include puppet::params
-  
-  package { $::puppet::params::puppet:
+ 
+  package { "puppet":
+    name   => $::puppet::params::puppet,
     ensure => present
   }
 
   if ($run_master) {
-    package { $::puppet::params::puppetmaster:
+    package { "puppetmaster":
+      name   => $::puppet::params::puppetmaster,
       ensure => present
     }
 
@@ -49,7 +51,8 @@ class puppet(
       group  => "puppet"
     }
 
-    package { $::puppet::params::activerecord:
+    package { "activerecord":
+      name   => $::puppet::params::activerecord,
       ensure => present
     }
 
@@ -58,7 +61,7 @@ class puppet(
     }
 
     File <| title == "/etc/puppet/puppet.conf" |> {
-      notify +> Service[$::puppet::params::apache_service]
+      notify +> Service["httpd"]
     }
 
     file { "/etc/puppet/autosign.conf":
@@ -71,7 +74,10 @@ class puppet(
      require => Package[ $::puppet::params::puppetmaster ],
    }
    
-  Service[$::puppet::params::apache_service] ~> Service['puppetmaster']
+
+   Service['httpd'] ~> Service['puppetmaster']
+
+  }
 
   if ($run_agent) {
     package { puppet:
@@ -97,7 +103,7 @@ class puppet(
 
     service { "puppet":
       ensure  => "running",
-      require => Package[puppet],
+      require => Package["puppet"],
       refreshonly => true
     }
 
@@ -105,15 +111,14 @@ class puppet(
 
   file { "/etc/puppet/puppet.conf":
     content => template('puppet/puppet.conf.erb'),
-    require => Package[$::puppet::params::puppet]
+    require => Package["puppet"]
   }
 
   file { "/etc/cron.d/puppet_cleanup":
     content => template('puppet/puppet_cleanup.erb'),
-    require => Package[$::puppet::params::puppet],
+    require => Package["puppet"],
     owner   => root,
     group   => root,
     mode    => 0644
   }
- }
 }
