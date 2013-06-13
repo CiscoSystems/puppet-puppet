@@ -27,12 +27,35 @@ describe 'puppet::repo::puppetlabs', :type => :class do
 
   context 'on redhat systems' do
     let :facts do
-      { :osfamily        => 'Redhat' }
+      {
+        :osfamily        => 'Redhat',
+        :operatingsystem => 'Redhat'
+      }
     end
-    it 'should fail until proper support is added' do
-      expect do
-        subject
-      end.to raise_error(Puppet::Error, /The puppetlabs yum repos are not yet supported/)
+    it 'should add the redhat specific repoos' do
+      should contain_yumrepo('puppetlabs').with(
+        :baseurl  => 'http://yum.puppetlabs.com/el/$releasever/products/$basearch'
+      )
+      should contain_yumrepo('puppetlabs-deps').with(
+        :baseurl  => 'http://yum.puppetlabs.com/el/$releasever/dependencies/$basearch'
+      )
+    end
+  end
+
+  context 'on fedora systems' do
+    let :facts do
+      {
+        :osfamily        => 'Redhat',
+        :operatingsystem => 'Fedora'
+      }
+    end
+    it 'should add the fedora specific repos' do
+      should contain_yumrepo('puppetlabs').with(
+        :baseurl  => 'http://yum.puppetlabs.com/fedora/f$releasever/products/$basearch'
+      )
+      should contain_yumrepo('puppetlabs-deps').with(
+        :baseurl  => 'http://yum.puppetlabs.com/fedora/f$releasever/dependencies/$basearch'
+      )
     end
   end
 

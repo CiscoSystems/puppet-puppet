@@ -12,9 +12,30 @@ class puppet::repo::puppetlabs() {
     }
     apt::source { 'puppetlabs':      repos => 'main' }
     apt::source { 'puppetlabs-deps': repos => 'dependencies' }
-  } elsif $::osfamily == 'Redhat' {
-    fail('The puppetlabs yum repos are not yet supported')
-  } else {
-    fail("Unsupported osfamily ${::osfamily}")
-  }
+    } elsif $::osfamily == 'Redhat' {
+      if $operatingsystem == "Fedora" {
+        $ostype="fedora"
+        $prefix="f"
+      } else {
+          $ostype="el"
+          $prefix=""
+      }
+      yumrepo { "puppetlabs-deps":
+        baseurl  => "http://yum.puppetlabs.com/${ostype}/${prefix}\$releasever/dependencies/\$basearch",
+        descr    => "Puppet Labs Dependencies \$releasever - \$basearch ",
+        enabled  => "1",
+        gpgcheck => "1",
+        gpgkey   => "http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs",
+      }
+
+      yumrepo { "puppetlabs":
+        baseurl  => "http://yum.puppetlabs.com/${ostype}/${prefix}\$releasever/products/\$basearch",
+        descr    => "Puppet Labs Products \$releasever - \$basearch",
+        enabled  => "1",
+        gpgcheck => "1",
+        gpgkey   => "http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs",
+      }
+    } else {
+      fail("Unsupported osfamily ${::osfamily}")
+    }
 }
