@@ -26,6 +26,7 @@ describe 'puppet::passenger', :type => :class do
                 should include_class('apache::mod::ssl')
                 should contain_exec('Certificate_Check').with(
                     :command =>
+                      "puppet cert clean #{params[:certname]} ; " +
                       "puppet certificate --ca-location=local generate #{params[:certname]}" +
                       " && puppet cert sign #{params[:certname]}" +
                       " && puppet certificate --ca-location=local find #{params[:certname]}",
