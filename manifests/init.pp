@@ -11,13 +11,13 @@ class puppet(
 ) {
   include puppet::params
  
-  package { "puppet":
+  package { 'puppet':
     name   => $::puppet::params::puppet,
     ensure => present
   }
 
   if ($run_master) {
-    package { "puppetmaster":
+    package { 'puppetmaster':
       name   => $::puppet::params::puppetmaster,
       ensure => present
     }
@@ -27,8 +27,8 @@ class puppet(
       path    => '/var/log/puppet/rails.log',
       ensure  => present,
       mode    => 0644,
-      owner   => "puppet",
-      group   => "puppet",
+      owner   => 'puppet',
+      group   => 'puppet',
     }
 
     # set up mysql server
@@ -45,32 +45,32 @@ class puppet(
       host         => localhost,
     }
 
-    file { "/var/lib/puppet/reports":
-      ensure => "directory",
-      owner  => "puppet",
-      group  => "puppet"
+    file { '/var/lib/puppet/reports':
+      ensure => 'directory',
+      owner  => 'puppet',
+      group  => 'puppet'
     }
 
-    package { "activerecord":
+    package { 'activerecord':
       name   => $::puppet::params::activerecord,
       ensure => present
     }
 
-    package { "ruby-mysql":
+    package { 'ruby-mysql':
       ensure => present
     }
 
     File <| title == "/etc/puppet/puppet.conf" |> {
-      notify +> Service["httpd"]
+      notify +> Service['httpd']
     }
 
-    file { "/etc/puppet/autosign.conf":
+    file { '/etc/puppet/autosign.conf':
       ensure => present,
       content   => template('puppet/autosign.conf.erb'),
     }
                 
-   service { "puppetmaster":
-     ensure => "running",
+   service { 'puppetmaster':
+     ensure => 'running',
      require => Package[ $::puppet::params::puppetmaster ],
    }
    
@@ -84,16 +84,16 @@ class puppet(
       ensure => present
     }
 
-    file { "/etc/default/puppet":
+    file { '/etc/default/puppet':
       content => template('puppet/defaults.erb'),
-      notify => Service["puppet"],
+      notify => Service['puppet'],
     }
 
     File <| title == "/etc/puppet/puppet.conf" |> {
       notify +> Service["puppet"]
     }
 
-    file { "/etc/init.d/puppet":
+    file { '/etc/init.d/puppet':
       mode => 0755,
       owner => root,
       group => root,
@@ -101,22 +101,22 @@ class puppet(
       notify => Service["puppet"]
     }
 
-    service { "puppet":
-      ensure  => "running",
-      require => Package["puppet"],
+    service { 'puppet':
+      ensure  => 'running',
+      require => Package['puppet'],
       refreshonly => true
     }
 
   }
 
-  file { "/etc/puppet/puppet.conf":
+  file { '/etc/puppet/puppet.conf':
     content => template('puppet/puppet.conf.erb'),
-    require => Package["puppet"]
+    require => Package['puppet']
   }
 
-  file { "/etc/cron.d/puppet_cleanup":
+  file { '/etc/cron.d/puppet_cleanup':
     content => template('puppet/puppet_cleanup.erb'),
-    require => Package["puppet"],
+    require => Package['puppet'],
     owner   => root,
     group   => root,
     mode    => 0644
