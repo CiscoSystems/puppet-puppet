@@ -10,6 +10,7 @@ class puppet(
   $mysql_password = 'changeMe'
 ) {
   include puppet::params
+  include apache
  
   package { 'puppet':
     name   => $::puppet::params::puppet,
