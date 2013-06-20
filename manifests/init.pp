@@ -69,15 +69,15 @@ class puppet(
       ensure => present,
       content   => template('puppet/autosign.conf.erb'),
     }
-                
-   service { 'puppetmaster':
-     ensure => 'running',
-     require => Package[ $::puppet::params::puppetmaster ],
-   }
-   
 
-   Service['httpd'] ~> Service['puppetmaster']
+    if ($::osfamily == 'Redhat') {
+      service { 'puppetmaster':
+        ensure => 'running',
+        require => Package[ $::puppet::params::puppetmaster ],
+      }
 
+      Service['httpd'] ~> Service['puppetmaster']
+    }
   }
 
   if ($run_agent) {
