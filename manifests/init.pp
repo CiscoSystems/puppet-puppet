@@ -17,6 +17,23 @@ class puppet(
     ensure => present
   }
 
+  # ensure that if we're using ubuntu and therefore passenger
+  # that our puppetmaster and default vhosts don't get dropped
+  # from our apache2 configuration
+  
+  if ($::osfamily == 'Debian') {
+ 
+    file {"/etc/apache2/sites-enabled/puppetmaster":
+      ensure => link,
+      target => "/etc/apache2/sites-available/puppetmaster",
+    }
+    file {"/etc/apache2/sites-enabled/default":
+      ensure => link,
+      target => "/etc/apache2/sites-available/default",
+    }
+
+  }
+
   if ($run_master) {
     package { 'puppetmaster':
       name   => $::puppet::params::puppetmaster,
