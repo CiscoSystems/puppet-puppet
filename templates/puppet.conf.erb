@@ -5,8 +5,10 @@ ssldir=/var/lib/puppet/ssl
 rundir=/var/run/puppet
 factpath=$vardir/lib/facter
 templatedir=$confdir/templates
+<% if @osfamily == "Debian" %>
 prerun_command=/etc/puppet/etckeeper-commit-pre
 postrun_command=/etc/puppet/etckeeper-commit-post
+<% end %>
 pluginsync=true
 runinterval=<%= runinterval %>
 <% if extra_modules != "" %>modulepath=<%= extra_modules %>:$confdir/modules:/usr/share/puppet/modules<% end %>
