@@ -27,7 +27,7 @@ describe 'puppet::passenger', :type => :class do
                 should contain_exec('Certificate_Check').with(
                     :command =>
                       "puppet cert clean #{params[:certname]} ; " +
-                      "puppet certificate --ca-location=local generate #{params[:certname]}" +
+                      "puppet certificate --ca-location=local --dns_alt_names=puppet generate #{params[:certname]}" +
                       " && puppet cert sign #{params[:certname]}" +
                       " && puppet certificate --ca-location=local find #{params[:certname]}",
                     :unless  => "/bin/ls #{params[:puppet_ssldir]}/certs/#{params[:certname]}.pem",
