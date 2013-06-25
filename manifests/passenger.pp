@@ -75,7 +75,7 @@ class puppet::passenger(
   }
 
   # first we need to generate the cert
-  # Clean the installed certs out ifrst 
+  # Clean the installed certs out ifrst
   $crt_clean_cmd  = "puppet cert clean ${certname}"
   # I would have preferred to use puppet cert generate, but it does not
   # return the corret exit code on some versions of puppet
