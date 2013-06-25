@@ -5,7 +5,7 @@ describe 'puppet::passenger', :type => :class do
             {
                 :puppet_passenger_port => '8140',
                 :puppet_docroot        => '/etc/puppet/rack/public/',
-                :apache_serveradmin    => 'root', 
+                :apache_serveradmin    => 'root',
                 :puppet_conf           => '/etc/puppet/puppet.conf',
                 :puppet_ssldir         => '/var/lib/puppet/ssl',
                 :certname              => 'test.test.com',
@@ -14,7 +14,7 @@ describe 'puppet::passenger', :type => :class do
         end
     context 'on Debian' do
         let(:facts) do
-            { 
+            {
                 :osfamily        => 'debian',
                 :operatingsystem => 'debian',
             }
@@ -26,6 +26,7 @@ describe 'puppet::passenger', :type => :class do
                 should include_class('apache::mod::ssl')
                 should contain_exec('Certificate_Check').with(
                     :command =>
+                      "puppet cert clean #{params[:certname]} ; " +
                       "puppet certificate --ca-location=local generate #{params[:certname]}" +
                       " && puppet cert sign #{params[:certname]}" +
                       " && puppet certificate --ca-location=local find #{params[:certname]}",
@@ -71,7 +72,7 @@ describe 'puppet::passenger', :type => :class do
     end
     context 'on Redhat' do
         let(:facts) do
-            { 
+            {
                 :osfamily        => 'Redhat',
                 :operatingsystem => 'Redhat',
             }
@@ -79,6 +80,7 @@ describe 'puppet::passenger', :type => :class do
          it {
                 should contain_file('/etc/httpd/conf.d/passenger.conf')
                 should contain_file('/var/lib/puppet/reports')
+                should contain_file('/var/lib/puppet/ssl/ca/requests')
         }
     end
 end

@@ -47,5 +47,5 @@ if ! defined(Class['puppetdb::master::config']) {
         puppetdb_startup_timeout => $puppetdb_startup_timeout,
         require                  => Class['puppetdb'],
       }
-  }  
+  }
 }
