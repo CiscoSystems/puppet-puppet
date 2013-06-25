@@ -61,7 +61,7 @@ class puppet::passenger(
   # first we need to generate the cert
   # I would have preferred to use puppet cert generate, but it does not
   # return the corret exit code on some versions of puppet
-  $crt_gen_cmd   = "puppet certificate --ca-location=local generate ${certname}"
+  $crt_gen_cmd   = "puppet certificate --ca-location=local --dns_alt_names=puppet generate ${certname}"
   # I am using the sign command here b/c AFAICT, the sign command for certificate
   # does not work
   $crt_sign_cmd  = "puppet cert sign ${certname}"
