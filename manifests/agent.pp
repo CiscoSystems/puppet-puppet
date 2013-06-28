@@ -92,6 +92,7 @@ class puppet::agent(
       owner   => $::puppet::params::puppet_user,
       group   => $::puppet::params::puppet_group,
       notify  => Service[$puppet_agent_service],
+      mode    => '0655',
     }
   }
 
