@@ -82,7 +82,7 @@ class puppet::passenger(
   $crt_gen_cmd   = "puppet certificate --ca-location=local --dns_alt_names=puppet generate ${certname}"
   # I am using the sign command here b/c AFAICT, the sign command for certificate
   # does not work
-  $crt_sign_cmd  = "puppet cert sign ${certname}"
+  $crt_sign_cmd  = "puppet cert sign --allow-dns-alt-names ${certname}"
   # find is required to move the cert into the certs directory which is
   # where it needs to be for puppetdb to find it
   $cert_find_cmd = "puppet certificate --ca-location=local find ${certname}"
