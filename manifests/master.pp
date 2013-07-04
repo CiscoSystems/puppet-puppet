@@ -127,6 +127,7 @@ class puppet::master (
   if ! defined(File[$::puppet::params::confdir]) {
     file { $::puppet::params::confdir:
       ensure  => directory,
+      mode    => '0655',
       require => Package[$puppet_master_package],
       owner   => $::puppet::params::puppet_user,
       group   => $::puppet::params::puppet_group,
