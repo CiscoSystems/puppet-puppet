@@ -14,6 +14,5 @@
   * Fix puppet site references 
 2013-05-12 Stephen Johnson <stephen@puppetlabs.com> - 0.0.9
   * Add srv record support to client 
-
-
-
+2013-07-22 Stephen Johnson <steve@thatbytes.co.ukm> - 0.0.14
+  * Addeed support of version 0.8.0 of Apache module
