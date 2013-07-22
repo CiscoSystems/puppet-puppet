@@ -101,7 +101,6 @@ class puppet::passenger(
     port               => $puppet_passenger_port,
     priority           => '40',
     docroot            => $puppet_docroot,
-    configure_firewall => false,
     serveradmin        => $apache_serveradmin,
     servername         => $certname,
     ssl                => true,
