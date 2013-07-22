@@ -41,15 +41,10 @@ class puppet::passenger(
 ){
   include apache
   include puppet::params
-  include apache::mod::passenger
+  class { 'apache::mod::passenger': passenger_max_pool_size => 12, }
   include apache::mod::ssl
 
   if $::osfamily == 'redhat' {
-    #hack so we dont nuke the passenger file
-    file{'/etc/httpd/conf.d/passenger.conf':
-      ensure => present,
-    }
-
     file{'/var/lib/puppet/reports':
       ensure => directory,
       owner  => $::puppet::params::puppet_user,
@@ -109,9 +104,23 @@ class puppet::passenger(
     configure_firewall => false,
     serveradmin        => $apache_serveradmin,
     servername         => $certname,
-    template           => 'puppet/apache2.conf.erb',
-    require            => [ File['/etc/puppet/rack/config.ru'], File[$puppet_conf] ],
     ssl                => true,
+    ssl_cert           => "${puppet_ssldir}/certs/${certname}.pem",
+    ssl_key            => "${puppet_ssldir}/private_keys/${certname}.pem",
+    ssl_chain          => "${puppet_ssldir}/ca/ca_crt.pem",
+    ssl_ca             => "${puppet_ssldir}/ca/ca_crt.pem",
+    ssl_crl            => "${puppet_ssldir}/ca/ca_crl.pem",
+    rack_base_uris     => '/',
+    custom_fragment    => template('puppet/apache_custom_fragment.erb'),
+    require            => [ File['/etc/puppet/rack/config.ru'], File[$puppet_conf] ],
+  }
+
+  #Hack to add extra passenger configurations for puppetmaster
+  file { 'puppet_passenger.conf':
+    ensure  => file,
+    path    => "${apache::mod_dir}/puppet_passenger.conf",
+    content => template('puppet/puppet_passenger.conf.erb'),
+    notify  => Service['httpd'],
   }
 
   file { '/etc/puppet/rack':
@@ -147,4 +156,3 @@ class puppet::passenger(
     require => File[$puppet_conf],
   }
 }
-

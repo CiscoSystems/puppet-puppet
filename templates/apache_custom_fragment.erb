@@ -1,0 +1,13 @@
+  #Custom puppet passenger settings
+  SSLProtocol -ALL +SSLv3 +TLSv1
+  SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:-LOW:-SSLv2:-EXP
+  SSLVerifyClient optional
+  SSLVerifyDepth 1
+  SSLOptions +StdEnvVars +ExportCertData
+
+  <Directory /etc/puppet/rack/>
+	Options None
+	AllowOverride None
+	Order allow,deny
+	allow from all
+  </Directory>
