@@ -130,6 +130,9 @@ class puppet::agent(
         minute  => [ $time1, $time2 ],
       }
     }
+    # Run Puppet through external tooling, like MCollective
+    external: {
+    }
     default: {
       err 'Unsupported puppet run style in Class[\'puppet::agent\']'
     }
