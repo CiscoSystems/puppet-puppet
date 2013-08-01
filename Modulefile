@@ -7,6 +7,6 @@ summary 'Resource types for managing puppet master and agent'
 license 'Apache'
 project_page 'https://github.com/stephenrjohnson/puppetlabs-puppet'
 ## Add dependencies, if any:
-dependency 'cprice404/inifile', '>= 0.5.0'
+dependency 'puppetlabs/inifile', '>= 0.5.0'
 dependency 'puppetlabs/apache', '>= 0.8.0'
 dependency 'puppetlabs/puppetdb', '>= 1.1.5'
