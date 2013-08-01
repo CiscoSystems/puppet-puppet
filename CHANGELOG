@@ -16,3 +16,5 @@
   * Add srv record support to client 
 2013-07-22 Stephen Johnson <steve@thatbytes.co.ukm> - 0.0.14
   * Addeed support of version 0.8.0 of Apache module
+2013-07-22 Stephen Johnson <steve@thatbytes.co.ukm> - 0.0.15
+  * Use puppetlabs inifile
