@@ -63,7 +63,7 @@ class puppet::master (
   $puppet_master_service    = $::puppet::params::puppet_master_service,
   $version                  = 'present',
   $apache_serveradmin       = $::puppet::params::apache_serveradmin,
-  $pluginsync               = 'true',
+  $pluginsync               = true,
   $puppetdb_startup_timeout = '60'
 ) inherits puppet::params {
 
