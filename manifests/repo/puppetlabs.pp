@@ -13,7 +13,7 @@ class puppet::repo::puppetlabs() {
     apt::source { 'puppetlabs':      repos => 'main' }
     apt::source { 'puppetlabs-deps': repos => 'dependencies' }
     } elsif $::osfamily == 'Redhat' {
-      if $operatingsystem == "Fedora" {
+      if $::operatingsystem == "Fedora" {
         $ostype="fedora"
         $prefix="f"
       } else {

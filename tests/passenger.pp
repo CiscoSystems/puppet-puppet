@@ -1,4 +1,4 @@
-class{puppet::passenger:
+class{ 'puppet::passenger':
   puppet_passenger_port => '8140',
   puppet_docroot => '/etc/puppet/doc',
   apache_serveradmin => 'me@example.com',

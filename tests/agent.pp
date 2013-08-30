@@ -1,1 +1,1 @@
-class{'puppet::agent':} 
+class{'puppet::agent':}
