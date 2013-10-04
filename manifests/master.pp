@@ -84,13 +84,21 @@ class puppet::master (
     }
   }
 
-  package { 'puppetmaster-common':
-    ensure   => $version,
+  if $::osfamily == 'Debian'
+  {
+    package { 'puppetmaster-common':
+      ensure   => $version,
+    }
+    package { $puppet_master_package:
+      ensure  => $version,
+      require => Package[puppetmaster-common],
+    }
   }
-
-  package { $puppet_master_package:
-    ensure  => $version,
-    require => Package[puppetmaster-common],
+  else
+  {
+    package { $puppet_master_package:
+      ensure         => $version,
+    }
   }
 
   Anchor['puppet::master::begin'] ->
