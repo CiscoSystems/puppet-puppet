@@ -22,3 +22,5 @@
   * Identation fixes
   * Also add puppetmaster-common to get round version issue
   * Add spec tests for puppetmaster-common
+2013-10-04 Stephen Johnson <steve@thatbytes.co.ukm> - 0.0.17
+  * Fix for puppetmaster-common not being in redhat repo
