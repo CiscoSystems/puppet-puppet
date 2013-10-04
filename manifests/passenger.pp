@@ -130,11 +130,11 @@ class puppet::passenger(
   }
 
   file { '/etc/puppet/rack/config.ru':
-    ensure => present,
-    owner  => $::puppet::params::puppet_user,
-    group  => $::puppet::params::puppet_group,
+    ensure  => present,
+    owner   => $::puppet::params::puppet_user,
+    group   => $::puppet::params::puppet_group,
     content => template('puppet/config.erb'),
-    mode   => '0644',
+    mode    => '0644',
   }
 
   ini_setting {'puppetmastersslclient':

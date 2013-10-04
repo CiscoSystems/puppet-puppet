@@ -192,9 +192,9 @@ class puppet::agent(
   }
 
   ini_setting {'puppetagentmaster':
-    ensure        => present,
-    setting   => 'server',
-    value => $puppet_server,
+    ensure   => present,
+    setting  => 'server',
+    value    => $puppet_server,
   }
 
   ini_setting {'puppetagentuse_srv_records':

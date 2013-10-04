@@ -84,10 +84,13 @@ class puppet::master (
     }
   }
 
-  if ! defined(Package[$puppet_master_package]) {
-    package { $puppet_master_package:
-      ensure   => $version,
-    }
+  package { 'puppetmaster-common':
+    ensure   => $version,
+  }
+
+  package { $puppet_master_package:
+    ensure  => $version,
+    require => Package[puppetmaster-common],
   }
 
   Anchor['puppet::master::begin'] ->

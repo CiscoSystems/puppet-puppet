@@ -36,6 +36,10 @@ describe 'puppet::master', :type => :class do
                 :gid    => nil
             )
             should contain_package(params[:puppet_master_package]).with(
+                :ensure => params[:version],
+                :require => 'Package[puppetmaster-common]'
+            )
+            should contain_package('puppetmaster-common').with(
                 :ensure => params[:version]
             )
             should contain_service(params[:puppet_master_service]).with(
