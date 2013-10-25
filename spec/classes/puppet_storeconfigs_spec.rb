@@ -25,4 +25,28 @@ describe 'puppet::storeconfigs', :type => :class do
              should include_class("puppetdb::master::config")
         }
     end
+
+    context 'on RedHat' do
+        let(:facts) do
+            { 
+                :osfamily        => 'RedHat',
+                :operatingsystem => 'RedHat',
+            }
+        end
+        let (:params) do
+            {
+                :dbserver              => 'test.example.com',
+                :dbport                => '8081',
+                :puppet_service        => 'Service[httpd]',
+                :puppet_confdir        => '/etc/puppet/',
+                :puppet_conf           => '/etc/puppet/puppet.conf',
+                :puppet_master_package => 'puppstmaster',
+                :puppetdb_startup_timeout => '60'
+            }
+        end
+
+        it {
+             should include_class("puppetdb::master::config")
+        }
+    end
 end
