@@ -57,7 +57,7 @@ describe 'puppet::repo::puppetlabs', :type => :class do
     end
   end
 
-  context 'on redhat systems' do
+  context 'on freebsd systems' do
     let :facts do
       { :osfamily        => 'FreeBSD' }
     end
