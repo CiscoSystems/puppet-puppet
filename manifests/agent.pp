@@ -132,6 +132,13 @@ class puppet::agent(
     }
     # Run Puppet through external tooling, like MCollective
     external: {
+      service { $puppet_agent_service:
+        ensure      => 'stopped',
+        enable      => false,
+        hasrestart  => true,
+        hasstatus   => true,
+        require     => Package[$puppet_agent_package],
+      }
     }
     default: {
       err 'Unsupported puppet run style in Class[\'puppet::agent\']'
