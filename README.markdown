@@ -8,7 +8,7 @@ http://forge.puppetlabs.com/puppetlabs/puppetdb. Storedconfigs with puppetdb
 will only work on puppet versions newer than 2.7.12.
 
 ## Prerequisites ##
-If you are using a red hat based OS you also need to have the EPEL repo configured
+If you are using a RedHat based OS you also need to have the EPEL repo configured
 as this module requires the passenger apache module.
 
 ## Usage Note ##
@@ -41,3 +41,24 @@ running through webrick. In which case run a single puppet run using
         environment               => production,
         splay                     => true,
     }
+
+## Testing ##
+
+Install gems:
+
+    bundle install --path vendor/bundle
+
+Lint and rspec-puppet:
+
+    bundle exec rake lint
+    bundle exec rake spec
+
+If you have a working Vagrant setup you can run the rspec-system tests:
+
+    bundle exec rake spec:system
+
+To use different base boxes than the default pass the name of the box to
+the rake command with the ```RSPEC_SET``` environment variable (check out
+.nodelist.yml for box names):
+
+    RSPEC_SET=centos-64-x64 bundle exec rake spec:system
