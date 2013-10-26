@@ -3,14 +3,14 @@ require 'spec_helper'
 describe 'puppet::agent', :type => :class do
     context 'on Debian operatingsystems' do
         let(:facts) do
-            { 
+            {
                 :osfamily        => 'Debian',
                 :operatingsystem => 'Debian',
                 :kernel          => 'Linux'
             }
         end
-        
-        describe 'when installed as' do 
+
+        describe 'when installed as' do
             context 'a service' do
                 let(:params) do
                     {
@@ -163,7 +163,7 @@ describe 'puppet::agent', :type => :class do
 
     context 'on RedHat operatingsystems' do
         let(:facts) do
-            { 
+            {
                 :osfamily        => 'RedHat',
                 :operatingsystem => 'RedHat',
                 :kernel          => 'Linux'

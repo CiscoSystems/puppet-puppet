@@ -4,7 +4,7 @@ describe 'puppet::storeconfigs', :type => :class do
 
     context 'on Debian' do
         let(:facts) do
-            { 
+            {
                 :osfamily        => 'Debian',
                 :operatingsystem => 'Debian',
             }
@@ -28,7 +28,7 @@ describe 'puppet::storeconfigs', :type => :class do
 
     context 'on RedHat' do
         let(:facts) do
-            { 
+            {
                 :osfamily        => 'RedHat',
                 :operatingsystem => 'RedHat',
             }
