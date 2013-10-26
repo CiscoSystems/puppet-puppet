@@ -2,3 +2,6 @@ pkg/*
 spec/fixtures/*
 Gemfile.lock
 *.swp
+.bundle/
+.rspec_system/
+vendor/

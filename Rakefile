@@ -14,6 +14,7 @@ PuppetLint.configuration.send('disable_documentation')
 PuppetLint.configuration.send('disable_double_quoted_strings')
 PuppetLint.configuration.send("disable_only_variable_string")
 PuppetLint.configuration.send('disable_variables_not_enclosed')
+PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
 
 desc "Run syntax, lint, and spec tests."
 task :test => [
