@@ -24,3 +24,7 @@
   * Add spec tests for puppetmaster-common
 2013-10-04 Stephen Johnson <steve@thatbytes.co.ukm> - 0.0.17
   * Fix for puppetmaster-common not being in redhat repo
+2013-10-27 Stephen Johnson <steve@thatbytes.co.ukm> - 0.0.18
+  * Add RedHat spec tests <Pall Valmundsson>
+  * Add ServerSpec test <Pall Valmundsson>
+  * Fix issues with external run type for agent
