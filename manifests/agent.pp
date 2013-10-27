@@ -91,7 +91,7 @@ class puppet::agent(
       require => Package[$puppet_agent_package],
       owner   => $::puppet::params::puppet_user,
       group   => $::puppet::params::puppet_group,
-      notify  => $service_notify,
+      notify  => Service[$puppet_agent_service],
       mode    => '0655',
     }
   }
@@ -130,7 +130,6 @@ class puppet::agent(
     }
   }
 
-  $service_notify = Service[$puppet_agent_service]
   service { $puppet_agent_service:
     ensure     => $service_ensure,
     enable     => $service_enable,
@@ -147,13 +146,13 @@ class puppet::agent(
         require => File[$::puppet::params::confdir],
         owner   => $::puppet::params::puppet_user,
         group   => $::puppet::params::puppet_group,
-        notify  => $service_notify,
+        notify  => Service[$puppet_agent_service],
       }
     }
     else {
       if $puppet_run_style == 'service' {
         File<| title == $::puppet::params::puppet_conf |> {
-          notify  +> $service_notify,
+          notify  +> Service[$puppet_agent_service],
         }
       }
     }
