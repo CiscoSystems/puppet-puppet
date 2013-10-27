@@ -68,14 +68,14 @@ class puppet::agent(
     ensure   => $version,
   }
 
-  if $puppet_run_style == 'service'{
+  if $puppet_run_style == 'service' {
     $startonboot = 'yes'
   }
   else {
     $startonboot = 'no'
   }
 
-  if ($::osfamily == 'Debian') or  ($::osfamily == 'Redhat') {
+  if ($::osfamily == 'Debian') or ($::osfamily == 'Redhat') {
     file { $puppet::params::puppet_defaults:
       mode    => '0644',
       owner   => 'root',
@@ -91,30 +91,20 @@ class puppet::agent(
       require => Package[$puppet_agent_package],
       owner   => $::puppet::params::puppet_user,
       group   => $::puppet::params::puppet_group,
-      notify  => Service[$puppet_agent_service],
+      notify  => $service_notify,
       mode    => '0655',
     }
   }
 
   case $puppet_run_style {
     'service': {
-          $service_notify = Service[$puppet_agent_service]
-          service { $puppet_agent_service:
-            ensure    => true,
-            enable    => true,
-            require   => File [$::puppet::params::puppet_conf],
-            subscribe => Package[$puppet_agent_package],
-            }
+      $service_ensure = 'running'
+      $service_enable = true
     }
     'cron': {
       # ensure that puppet is not running and will start up on boot
-      service { $puppet_agent_service:
-        ensure      => 'stopped',
-        enable      => false,
-        hasrestart  => true,
-        hasstatus   => true,
-        require     => Package[$puppet_agent_package],
-      }
+      $service_ensure = 'stopped'
+      $service_enable = false
 
       # Run puppet as a cron - this saves memory and avoids the whole problem
       # where puppet locks up for no reason. Also spreads out the run intervals
@@ -132,17 +122,22 @@ class puppet::agent(
     }
     # Run Puppet through external tooling, like MCollective
     external: {
-      service { $puppet_agent_service:
-        ensure      => 'stopped',
-        enable      => false,
-        hasrestart  => true,
-        hasstatus   => true,
-        require     => Package[$puppet_agent_package],
-      }
+      $service_ensure = 'stopped'
+      $service_enable = false
     }
     default: {
       err 'Unsupported puppet run style in Class[\'puppet::agent\']'
     }
+  }
+
+  $service_notify = Service[$puppet_agent_service]
+  service { $puppet_agent_service:
+    ensure     => $service_ensure,
+    enable     => $service_enable,
+    hasstatus  => true,
+    hasrestart => true,
+    subscribe  => File [$::puppet::params::puppet_conf],
+    require    => Package[$puppet_agent_package],
   }
 
   if ! defined(File[$::puppet::params::puppet_conf]) {
