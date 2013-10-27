@@ -20,9 +20,10 @@ RSpec.configure do |c|
         # Install puppet
         puppet_install
         puppet_module_install(:source => proj_root, :module_name => 'puppet')
-        shell('puppet module install puppetlabs-inifile --version 1.0.0')
-        shell('puppet module install puppetlabs-apache --version 0.8.0')
-        shell('puppet module install puppetlabs-puppetdb --version 1.1.5')
+        # Install dependencies from Modulefile
+        shell('puppet module install puppetlabs-inifile --version ">= 1.0.0"')
+        shell('puppet module install puppetlabs-apache --version ">= 0.8.0"')
+        shell('puppet module install puppetlabs-puppetdb --version ">= 2.0.0"')
         if node.facts['osfamily'] == 'Debian'
             shell('puppet module install puppetlabs-apt')
         end
