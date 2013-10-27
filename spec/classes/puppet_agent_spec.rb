@@ -34,9 +34,9 @@ describe 'puppet::agent', :type => :class do
                         :require  => "Package[#{params[:puppet_agent_package]}]"
                     )
                     should contain_service(params[:puppet_agent_service]).with(
-                        :ensure  => true,
+                        :ensure  => 'running',
                         :enable  => true,
-                        :require => 'File[/etc/puppet/puppet.conf]'
+                        :require => "Package[#{params[:puppet_agent_package]}]"
                     )
                 }
             end
@@ -193,9 +193,9 @@ describe 'puppet::agent', :type => :class do
                         :require  => "Package[#{params[:puppet_agent_package]}]"
                     )
                     should contain_service(params[:puppet_agent_service]).with(
-                        :ensure  => true,
+                        :ensure  => 'running',
                         :enable  => true,
-                        :require => 'File[/etc/puppet/puppet.conf]'
+                        :require => "Package[#{params[:puppet_agent_package]}]"
                     )
                 }
             end
