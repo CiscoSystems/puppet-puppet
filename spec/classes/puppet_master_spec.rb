@@ -113,6 +113,14 @@ describe 'puppet::master', :type => :class do
                 :value   => 'store',
                 :require => 'File[/etc/puppet/puppet.conf]'
             )
+            should contain_ini_setting('puppetmasterparser').with(
+                :ensure  => 'present',
+                :section => 'master',
+                :setting => 'parser',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => 'current',
+                :require => 'File[/etc/puppet/puppet.conf]'
+            )
             should contain_ini_setting('puppetmasterpluginsync').with(
                 :ensure  => 'present',
                 :section => 'master',
@@ -235,6 +243,14 @@ describe 'puppet::master', :type => :class do
                 :setting => 'reports',
                 :path    => '/etc/puppet/puppet.conf',
                 :value   => 'store',
+                :require => 'File[/etc/puppet/puppet.conf]'
+            )
+            should contain_ini_setting('puppetmasterparser').with(
+                :ensure  => 'present',
+                :section => 'master',
+                :setting => 'parser',
+                :path    => '/etc/puppet/puppet.conf',
+                :value   => 'current',
                 :require => 'File[/etc/puppet/puppet.conf]'
             )
             should contain_ini_setting('puppetmasterpluginsync').with(

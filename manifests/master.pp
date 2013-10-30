@@ -22,6 +22,8 @@
 #  ['puppet_master_service']    - Puppet master service
 #  ['version']                  - Version of the puppet master package to install
 #  ['apache_serveradmin']       - Apache server admin
+#  ['pluginsync']               - Enable plugin sync
+#  ['parser']                   - Which parser to use
 #  ['puppetdb_startup_timeout'] - The timeout for puppetdb
 #
 # Requires:
