@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/stephenrjohnson/puppetlabs-puppet.png)](https://travis-ci.org/stephenrjohnson/puppetlabs-puppet)
+[![Build Status](https://travis-ci.org/stephenrjohnson/puppetmodule.png)](https://travis-ci.org/stephenrjohnson/puppetmodule)
 # Puppet module #
 
 This module provides classes for managing the puppet agent and puppet master. 
@@ -10,6 +10,8 @@ will only work on puppet versions newer than 2.7.12.
 ## Prerequisites ##
 If you are using a RedHat based OS you also need to have the EPEL repo configured
 as this module requires the passenger apache module.
+
+Requires the following modules from puppetforge: [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib), [apache](https://forge.puppetlabs.com/puppetlabs/apache), [concat](https://forge.puppetlabs.com/puppetlabs/concat), [inifile](https://forge.puppetlabs.com/puppetlabs/inifile)
 
 ## Usage Note ##
 
