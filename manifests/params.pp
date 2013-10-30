@@ -26,6 +26,7 @@ class puppet::params {
   $puppet_server_port               = '8140'
   $puppet_agent_enabled             = true
   $apache_serveradmin               = 'root'
+  $parser                           = 'current'
 
   case $::osfamily {
     RedHat: {

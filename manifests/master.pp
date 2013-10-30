@@ -64,6 +64,7 @@ class puppet::master (
   $version                  = 'present',
   $apache_serveradmin       = $::puppet::params::apache_serveradmin,
   $pluginsync               = true,
+  $parser                   = $::puppet::params::parser,
   $puppetdb_startup_timeout = '60'
 ) inherits puppet::params {
 
@@ -215,6 +216,12 @@ class puppet::master (
     ensure  => present,
     setting => 'pluginsync',
     value   => $pluginsync,
+  }
+
+  ini_setting {'puppetmasterparser':
+    ensure  => present,
+    setting => 'parser',
+    value   => $parser,
   }
 
   if $reporturl != 'UNSET'{
