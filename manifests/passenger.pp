@@ -56,7 +56,7 @@ class puppet::passenger(
       ensure => directory,
       owner  => $::puppet::params::puppet_user,
       group  => $::puppet::params::puppet_group,
-      mode   => '0750',
+      mode   => '0770',
       before => Exec['Certificate_Check'],
     }
 
