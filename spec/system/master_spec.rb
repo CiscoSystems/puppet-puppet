@@ -10,17 +10,54 @@ describe 'master tests:' do
         end
     end
 
-    # Using puppet_apply as a helper
-    it 'puppet::master class should work with no errors' do
-        pp = <<-EOS
-            class { 'puppet::master': }
-        EOS
+    context 'without puppetdb' do
+        it 'puppet::master class should work with no errors' do
+            pp = <<-EOS
+                class { 'puppet::master': }
+            EOS
 
-        # Run it twice and test for idempotency
-        puppet_apply(pp) do |r|
-            r.exit_code.should_not == 1
-            r.refresh
-            r.exit_code.should be_zero
+            # Run it twice and test for idempotency
+            puppet_apply(pp) do |r|
+                r.exit_code.should_not == 1
+                r.refresh
+                r.exit_code.should be_zero
+            end
+        end
+    end
+
+    context 'with external puppetdb' do
+        it 'puppet::master class should work with no errors' do
+            pp = <<-EOS
+                class { 'puppet::master':
+                    storeconfigs               => true,
+                    storeconfigs_dbserver      => 'puppetdb.foo.local',
+                    puppetdb_strict_validation => false,
+                }
+            EOS
+
+            # Run it twice and test for idempotency
+            puppet_apply(pp) do |r|
+                r.exit_code.should_not == 1
+                r.refresh
+                r.exit_code.should be_zero
+            end
+        end
+    end
+
+    # This test has to be after the non-puppetdb tests
+    context 'with puppetdb' do
+        it 'puppet::master class should work with no errors' do
+            pp = <<-EOS
+                class { 'puppetdb': }
+                class { 'puppet::master': }
+            EOS
+
+            # Run it twice and test for idempotency
+            puppet_apply(pp) do |r|
+                r.exit_code.should_not == 1
+                r.refresh
+                r.exit_code.should be_zero
+            end
         end
     end
 end

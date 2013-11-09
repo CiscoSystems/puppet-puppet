@@ -67,7 +67,8 @@ class puppet::master (
   $apache_serveradmin       = $::puppet::params::apache_serveradmin,
   $pluginsync               = true,
   $parser                   = $::puppet::params::parser,
-  $puppetdb_startup_timeout = '60'
+  $puppetdb_startup_timeout = '60',
+  $puppetdb_strict_validation = $::puppet::params::puppetdb_strict_validation
 ) inherits puppet::params {
 
   anchor { 'puppet::master::begin': }
@@ -173,6 +174,7 @@ class puppet::master (
       puppet_conf               => $::puppet::params::puppet_conf,
       puppet_master_package     => $puppet_master_package,
       puppetdb_startup_timeout  => $puppetdb_startup_timeout,
+      puppetdb_strict_validation => $puppetdb_strict_validation,
     } ->
     Anchor['puppet::master::end']
   }

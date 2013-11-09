@@ -32,6 +32,7 @@ class puppet::storeconfigs(
     $puppet_service,
     $puppet_master_package,
     $puppetdb_startup_timeout,
+    $puppetdb_strict_validation,
     $puppet_confdir =  $::puppet::params::confdir,
     $puppet_conf    =  $::puppet::params::puppet_conf
 )inherits puppet::params {
@@ -45,7 +46,7 @@ if ! defined(Class['puppetdb::master::config']) {
         restart_puppet           => false,
         notify                   => $puppet_service,
         puppetdb_startup_timeout => $puppetdb_startup_timeout,
-        require                  => Class['puppetdb'],
+        strict_validation        => $puppetdb_strict_validation,
       }
   }
 }

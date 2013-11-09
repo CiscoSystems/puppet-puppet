@@ -17,7 +17,8 @@ describe 'puppet::storeconfigs', :type => :class do
                 :puppet_confdir        => '/etc/puppet/',
                 :puppet_conf           => '/etc/puppet/puppet.conf',
                 :puppet_master_package => 'puppstmaster',
-                :puppetdb_startup_timeout => '60'
+                :puppetdb_startup_timeout => '60',
+                :puppetdb_strict_validation => true
             }
         end
 
@@ -41,7 +42,8 @@ describe 'puppet::storeconfigs', :type => :class do
                 :puppet_confdir        => '/etc/puppet/',
                 :puppet_conf           => '/etc/puppet/puppet.conf',
                 :puppet_master_package => 'puppstmaster',
-                :puppetdb_startup_timeout => '60'
+                :puppetdb_startup_timeout => '60',
+                :puppetdb_strict_validation => true
             }
         end
 
