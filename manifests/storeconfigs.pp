@@ -37,16 +37,26 @@ class puppet::storeconfigs(
     $puppet_conf    =  $::puppet::params::puppet_conf
 )inherits puppet::params {
 
-if ! defined(Class['puppetdb::master::config']) {
-      class{ 'puppetdb::master::config':
-        puppetdb_server          => $dbserver,
-        puppetdb_port            => $dbport,
-        puppet_confdir           => $puppet_confdir,
-        puppet_conf              => $puppet_conf,
-        restart_puppet           => false,
-        notify                   => $puppet_service,
-        puppetdb_startup_timeout => $puppetdb_startup_timeout,
-        strict_validation        => $puppetdb_strict_validation,
-      }
+  ##If we point at a puppetdb on this machine
+  if ($dbserver  == 'localhost') or ($dbserver  == '127.0.0.1') or ($dbserver  == $::fqdn)
+  {
+    $require  =  Class[puppetdb]
+  }
+  else
+  {
+    $require = undef
+  }
+  if ! defined(Class['puppetdb::master::config']) {
+    class{ 'puppetdb::master::config':
+      puppetdb_server          => $dbserver,
+      puppetdb_port            => $dbport,
+      puppet_confdir           => $puppet_confdir,
+      puppet_conf              => $puppet_conf,
+      restart_puppet           => false,
+      notify                   => $puppet_service,
+      puppetdb_startup_timeout => $puppetdb_startup_timeout,
+      strict_validation        => $puppetdb_strict_validation,
+      require                  => $require,
+    }
   }
 }

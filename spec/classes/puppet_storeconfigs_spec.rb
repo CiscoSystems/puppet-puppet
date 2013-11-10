@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'puppet::storeconfigs', :type => :class do
 
-    context 'on Debian' do
+    context 'Pointing at remote puppetdb server' do
         let(:facts) do
             {
                 :osfamily        => 'Debian',
@@ -23,20 +23,21 @@ describe 'puppet::storeconfigs', :type => :class do
         end
 
         it {
-             should include_class("puppetdb::master::config")
+             should contain_class("puppetdb::master::config").with(
+               :require => nil
+             )
         }
     end
-
-    context 'on RedHat' do
+    context 'Pointing at local puppetdb server' do
         let(:facts) do
             {
-                :osfamily        => 'RedHat',
-                :operatingsystem => 'RedHat',
+                :osfamily        => 'Debian',
+                :operatingsystem => 'Debian',
             }
         end
         let (:params) do
             {
-                :dbserver              => 'test.example.com',
+                :dbserver              => 'localhost',
                 :dbport                => '8081',
                 :puppet_service        => 'Service[httpd]',
                 :puppet_confdir        => '/etc/puppet/',
@@ -48,7 +49,10 @@ describe 'puppet::storeconfigs', :type => :class do
         end
 
         it {
-             should include_class("puppetdb::master::config")
+             should contain_class("puppetdb::master::config").with(
+               :require => 'Class[Puppetdb]'
+             )
         }
     end
+
 end

@@ -49,7 +49,9 @@ describe 'master tests:' do
         it 'puppet::master class should work with no errors' do
             pp = <<-EOS
                 class { 'puppetdb': }
-                class { 'puppet::master': }
+                class { 'puppet::master':
+                    storeconfigs               => true,
+                }
             EOS
 
             # Run it twice and test for idempotency

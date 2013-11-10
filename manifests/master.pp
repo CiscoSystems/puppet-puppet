@@ -167,13 +167,13 @@ class puppet::master (
   if $storeconfigs {
     Anchor['puppet::master::begin'] ->
     class { 'puppet::storeconfigs':
-      dbserver                  => $storeconfigs_dbserver,
-      dbport                    => $storeconfigs_dbport,
-      puppet_service            => Service['httpd'],
-      puppet_confdir            => $::puppet::params::puppet_confdir,
-      puppet_conf               => $::puppet::params::puppet_conf,
-      puppet_master_package     => $puppet_master_package,
-      puppetdb_startup_timeout  => $puppetdb_startup_timeout,
+      dbserver                   => $storeconfigs_dbserver,
+      dbport                     => $storeconfigs_dbport,
+      puppet_service             => Service['httpd'],
+      puppet_confdir             => $::puppet::params::puppet_confdir,
+      puppet_conf                => $::puppet::params::puppet_conf,
+      puppet_master_package      => $puppet_master_package,
+      puppetdb_startup_timeout   => $puppetdb_startup_timeout,
       puppetdb_strict_validation => $puppetdb_strict_validation,
     } ->
     Anchor['puppet::master::end']
