@@ -29,3 +29,5 @@
   * Add ServerSpec test <Pall Valmundsson>
   * Fix issues with external run type for agent
   * Remove dependencies on MIT Gpg Server
+2013-11-10 Stephen Johnson <steve@thatbytes.co.ukm> - 0.0.19
+  * Support configuring storeconfigs on an external puppetdb server <Pall Valmundsson>
