@@ -48,7 +48,7 @@ class puppet::master (
   $group_id                 = undef,
   $modulepath               = $::puppet::params::modulepath,
   $manifest                 = $::puppet::params::manifest,
-  $reports                  = store,
+  $reports                  = 'store,puppetdb',
   $storeconfigs             = false,
   $storeconfigs_dbserver   =  $::puppet::params::storeconfigs_dbserver,
   $storeconfigs_dbport      = $::puppet::params::storeconfigs_dbport,
